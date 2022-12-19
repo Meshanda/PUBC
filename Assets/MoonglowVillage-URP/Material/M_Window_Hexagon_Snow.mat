@@ -2,14 +2,17 @@
 %TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
-  serializedVersion: 6
+  serializedVersion: 8
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Window_Hexagon_Snow
   m_Shader: {fileID: 4800000, guid: c6683c9d0b461464896443c32c8ec975, type: 3}
-  m_ShaderKeywords: _METALLICGLOSSMAP _NORMALMAP
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -75,7 +78,9 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    m_Ints: []
     m_Floats:
+    - _AlphaCutoff: 0.5
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -89,8 +94,11 @@ Material:
     - _Parallax: 0.02
     - _Power: 71.97
     - _SmoothnessTextureChannel: 0
+    - _Snow_Contrast: 1
+    - _Snow_Range: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
+    - _Tiling: 0.02
     - _Tilling: 0.13
     - _UVSec: 0
     - _ZWrite: 1
@@ -102,3 +110,4 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Vector0: {r: 0, g: 1, b: 0, a: 0.9}
     - _nor: {r: 0, g: 0, b: 1, a: 0}
+  m_BuildTextureStacks: []
