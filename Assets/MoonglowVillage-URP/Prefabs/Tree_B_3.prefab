@@ -29,6 +29,7 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -0.1614512, y: 2.7351727, z: -0.13296007}
   m_LocalScale: {x: 2.6880524, y: 2.6880524, z: 2.6880524}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8988118495518571629}
   m_RootOrder: 0
@@ -52,6 +53,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -124,7 +126,8 @@ Transform:
   m_GameObject: {fileID: 8988118495518571624}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2.9582973, y: 2.9582973, z: 2.9582973}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6770683566028646410}
   m_Father: {fileID: 0}
@@ -149,6 +152,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -192,4 +196,4 @@ MeshCollider:
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 3369774975282157769, guid: f8790281a2d92954b9d285efde317e76, type: 3}
+  m_Mesh: {fileID: -2208910758171135464, guid: ad02ef4f9995ac446a20c9b34e138528, type: 3}
