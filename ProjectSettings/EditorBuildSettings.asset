@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
     guid: c07da76b1bab59d4fbf049ea3b0cfd0e
+  - enabled: 1
+    path: Assets/Scenes/LionelDev.unity
+    guid: 372fd691b614fe4489cd15823acfe17f
   m_configObjects: {}
