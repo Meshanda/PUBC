@@ -12,7 +12,10 @@ public class GameManager : NetworkBehaviour
     private void Start()
     {
         if (instance == null)
+        {
             instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
         else
             Destroy(this);
     }
