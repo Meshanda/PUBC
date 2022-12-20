@@ -216,7 +216,7 @@ namespace Unity.FPS.Gameplay
             HandleCharacterMovement();
         }
 
-        void OnDie()
+        void OnDie(GameObject killer)
         {
             IsDead = true;
 

@@ -12,7 +12,7 @@ namespace Unity.FPS.Game
 
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
-        public UnityAction OnDie;
+        public UnityAction<GameObject> OnDie;
 
         public float CurrentHealth { get; set; }
         public bool Invincible { get; set; }
@@ -55,12 +55,20 @@ namespace Unity.FPS.Game
             float trueDamageAmount = healthBefore - CurrentHealth;
             if (trueDamageAmount > 0f)
             {
+
                 OnDamaged?.Invoke(trueDamageAmount, damageSource);
             }
 
-            HandleDeath();
+            HandleDeath(damageSource);
         }
 
+        private void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.K))
+            {
+                TakeDamage(MaxHealth, gameObject);
+            }
+        }
         public void Kill()
         {
             CurrentHealth = 0f;
@@ -71,7 +79,7 @@ namespace Unity.FPS.Game
             HandleDeath();
         }
 
-        void HandleDeath()
+        void HandleDeath(GameObject killer = null)
         {
             if (m_IsDead)
                 return;
@@ -80,7 +88,7 @@ namespace Unity.FPS.Game
             if (CurrentHealth <= 0f)
             {
                 m_IsDead = true;
-                OnDie?.Invoke();
+                OnDie?.Invoke(killer);
             }
         }
     }
