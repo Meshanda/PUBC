@@ -23,7 +23,6 @@ public class GameManager : NetworkBehaviour
 
     private void OnPlayersKillsChanged(NetworkListEvent<PlayerKillAmount> changedPlayersKills)
     {
-        Debug.Log($"Player with the id: {changedPlayersKills.Value.clientId} have {changedPlayersKills.Value.killsAmount} kills !");
         if (changedPlayersKills.Value.killsAmount >= _maxWinKill.value)
         {
             Debug.Log($"Player with the id: {changedPlayersKills.Value.clientId} won !");
