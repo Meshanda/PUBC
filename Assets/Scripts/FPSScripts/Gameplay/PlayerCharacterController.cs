@@ -1,11 +1,12 @@
 ﻿using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace Unity.FPS.Gameplay
 {
     [RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(AudioSource))]
-    public class PlayerCharacterController : MonoBehaviour
+    public class PlayerCharacterController : NetworkBehaviour
     {
         [Header("References")] [Tooltip("Reference to the main camera used for the player")]
         public Camera PlayerCamera;
@@ -142,6 +143,12 @@ namespace Unity.FPS.Gameplay
 
         void Start()
         {
+            if (!IsOwner)
+            {
+                Destroy(PlayerCamera);
+                return;
+            }
+            
             // fetch components on the same gameObject
             m_Controller = GetComponent<CharacterController>();
             DebugUtility.HandleErrorIfNullGetComponent<CharacterController, PlayerCharacterController>(m_Controller,
@@ -172,6 +179,9 @@ namespace Unity.FPS.Gameplay
 
         void Update()
         {
+            if (!IsOwner)
+                return; 
+            
             // check for Y kill
             if (!IsDead && transform.position.y < KillHeight)
             {
