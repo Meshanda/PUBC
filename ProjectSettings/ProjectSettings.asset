@@ -721,11 +721,11 @@ PlayerSettings:
   apiCompatibilityLevel: 6
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: 
+  cloudProjectId: 5a55525f-6000-4719-8c46-e1c20decde9c
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: 
-  organizationId: 
+  projectName: gamejam2-noel
+  organizationId: meshanda
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   playerDataPath: 
