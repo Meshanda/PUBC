@@ -19,7 +19,7 @@
                     "type": "Value",
                     "id": "55d480f4-45a3-4b50-9f7f-b11012ab8ac9",
                     "expectedControlType": "Vector2",
-                    "processors": "",
+                    "processors": "InvertVector2(invertX=false)",
                     "interactions": "",
                     "initialStateCheck": true
                 },
@@ -38,7 +38,7 @@
                     "id": "79b890e5-b7f5-4629-982f-a30a9dbd0738",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
                 },
                 {
@@ -47,7 +47,7 @@
                     "id": "530b68b4-d687-45f4-8275-73353d8fde15",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
                 },
                 {
@@ -76,6 +76,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "5c131e7c-b48c-4ee3-a079-e436a5f6633f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -148,7 +157,7 @@
                 {
                     "name": "",
                     "id": "7a9f25e0-df06-4808-8ba3-2fa6dbff8277",
-                    "path": "<Mouse>/position",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -241,6 +250,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "SwitchButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "921d7c80-ac40-4f68-91dc-72ee7b745ac3",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
