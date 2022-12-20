@@ -38,6 +38,7 @@ public class GameInstance : NetworkBehaviour
     public void AddKill(ulong clientID, int killAmountToAdd = 1)
     {
         PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
+        Debug.Log(playerKills);
         playerKills.killsAmount += killAmountToAdd;
         ReplacePlayerKillAmount(clientID, playerKills);
     }
@@ -57,7 +58,8 @@ public class GameInstance : NetworkBehaviour
         playersKills.Add(newPlayerKillAmount);
 
         //Here plug the kill event listener
-        //NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKillServerRpc;
+        Debug.Log("id: " + clientId);
+        NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKill;
     }
     private void RemovePlayer(ulong clientId)
     {
@@ -83,6 +85,12 @@ public class GameInstance : NetworkBehaviour
             }
         }
     }
+
+    public void OnPlayerKill(ulong killerClientId)
+    {
+        Debug.Log("killer id " + killerClientId);
+        AddKill(killerClientId);
+    }
     [ServerRpc]
     private void OnPlayerKillServerRpc(ulong killerClientId)
     {
@@ -90,6 +98,11 @@ public class GameInstance : NetworkBehaviour
     }
     private void Update()
     {
+        foreach (var playerKills in playersKills)
+        {
+            Debug.Log($"id of player: {playerKills.clientId}");
+        }
+        
         foreach (var playerKill in playersKills)
         {
             Debug.Log($"player with the id: {playerKill.clientId} have {playerKill.killsAmount} kills");
