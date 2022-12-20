@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Maps:
   - MapName: Map 1
-    SceneName: MapLevel
+    SceneName: Elvyn
   - MapName: Map 2
-    SceneName: MapLevel
+    SceneName: Elvyn
   - MapName: Map 3
-    SceneName: MapLevel
+    SceneName: Elvyn
