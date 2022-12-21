@@ -7,6 +7,7 @@ using UnityEngine.Rendering.Universal;
 
 public class LobbyPlayer : MonoBehaviour
 {
+    [SerializeField] private Animator _animator;
     [SerializeField] private TextMeshPro _playerName;
     [SerializeField] private Renderer _renderer;
     [SerializeField] private GlowColor _notReadyColor;
@@ -43,6 +44,7 @@ public class LobbyPlayer : MonoBehaviour
             {
                 ChangeMaterial(_readyColor);
             }
+            _animator.SetBool("Ready", true);
         }
         else
         {
@@ -50,6 +52,7 @@ public class LobbyPlayer : MonoBehaviour
             {
                 ChangeMaterial(_notReadyColor);
             }
+            _animator.SetBool("Ready", false);
         }
         
         gameObject.SetActive(true);

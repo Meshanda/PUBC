@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class GUINetwork : MonoBehaviour
+public class GUINetworkConnection : MonoBehaviour
 {
     void OnGUI()
     {
