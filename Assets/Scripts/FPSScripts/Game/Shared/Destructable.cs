@@ -21,7 +21,7 @@ namespace Unity.FPS.Game
             // TODO: damage reaction
         }
 
-        void OnDie()
+        void OnDie(ulong killerId)
         {
             // this will call the OnDestroy function
             Destroy(gameObject);

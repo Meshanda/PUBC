@@ -1,11 +1,13 @@
 ﻿using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace Unity.FPS.Gameplay
 {
     [RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(AudioSource))]
-    public class PlayerCharacterController : MonoBehaviour
+    public class PlayerCharacterController : NetworkBehaviour
     {
         [Header("References")] [Tooltip("Reference to the main camera used for the player")]
         public Camera PlayerCamera;
@@ -104,7 +106,28 @@ namespace Unity.FPS.Gameplay
         public bool IsDead { get; private set; }
         public bool IsCrouching { get; private set; }
 
-        public float RotationMultiplier
+    #region Camera
+
+        private Vector2 _lookAtAxis;
+
+
+    #endregion
+
+    #region Jump
+
+    
+        private bool _bJump;
+
+    #endregion
+
+    #region Movement
+
+        private Vector3 _horizontalAxis;
+        private bool _bIsSprinting;
+
+    #endregion
+
+    public float RotationMultiplier
         {
             get
             {
@@ -130,6 +153,7 @@ namespace Unity.FPS.Gameplay
         float m_FootstepDistanceCounter;
         float m_TargetCharacterHeight;
 
+
         const float k_JumpGroundingPreventionTime = 0.2f;
         const float k_GroundCheckDistanceInAir = 0.07f;
 
@@ -142,6 +166,12 @@ namespace Unity.FPS.Gameplay
 
         void Start()
         {
+            if (!IsOwner)
+            {
+                Destroy(PlayerCamera);
+                return;
+            }
+            
             // fetch components on the same gameObject
             m_Controller = GetComponent<CharacterController>();
             DebugUtility.HandleErrorIfNullGetComponent<CharacterController, PlayerCharacterController>(m_Controller,
@@ -172,6 +202,9 @@ namespace Unity.FPS.Gameplay
 
         void Update()
         {
+            if (!IsOwner)
+                return; 
+            
             // check for Y kill
             if (!IsDead && transform.position.y < KillHeight)
             {
@@ -205,18 +238,14 @@ namespace Unity.FPS.Gameplay
                 }
             }
 
-            // crouching
-            if (m_InputHandler.GetCrouchInputDown())
-            {
-                SetCrouchingState(!IsCrouching, false);
-            }
-
             UpdateCharacterHeight(false);
 
+            HandleCameraRotation(_lookAtAxis.x, _lookAtAxis.y);
+            HandleJump();
             HandleCharacterMovement();
         }
 
-        void OnDie()
+        void OnDie(ulong killerId)
         {
             IsDead = true;
 
@@ -266,38 +295,17 @@ namespace Unity.FPS.Gameplay
 
         void HandleCharacterMovement()
         {
-            // horizontal character rotation
-            {
-                // rotate the transform with the input speed around its local Y axis
-                transform.Rotate(
-                    new Vector3(0f, (m_InputHandler.GetLookInputsHorizontal() * RotationSpeed * RotationMultiplier),
-                        0f), Space.Self);
-            }
-
-            // vertical camera rotation
-            {
-                // add vertical inputs to the camera's vertical angle
-                m_CameraVerticalAngle += m_InputHandler.GetLookInputsVertical() * RotationSpeed * RotationMultiplier;
-
-                // limit the camera's vertical angle to min/max
-                m_CameraVerticalAngle = Mathf.Clamp(m_CameraVerticalAngle, -89f, 89f);
-
-                // apply the vertical angle as a local rotation to the camera transform along its right axis (makes it pivot up and down)
-                PlayerCamera.transform.localEulerAngles = new Vector3(m_CameraVerticalAngle, 0, 0);
-            }
-
             // character movement handling
-            bool isSprinting = m_InputHandler.GetSprintInputHeld();
             {
-                if (isSprinting)
+                if (_bIsSprinting)
                 {
-                    isSprinting = SetCrouchingState(false, false);
+                    _bIsSprinting = SetCrouchingState(false, false);
                 }
 
-                float speedModifier = isSprinting ? SprintSpeedModifier : 1f;
+                float speedModifier = _bIsSprinting ? SprintSpeedModifier : 1f;
 
                 // converts move input to a worldspace vector based on our character's transform orientation
-                Vector3 worldspaceMoveInput = transform.TransformVector(m_InputHandler.GetMoveInput());
+                Vector3 worldspaceMoveInput = transform.TransformVector(_horizontalAxis);
 
                 // handle grounded movement
                 if (IsGrounded)
@@ -314,34 +322,9 @@ namespace Unity.FPS.Gameplay
                     CharacterVelocity = Vector3.Lerp(CharacterVelocity, targetVelocity,
                         MovementSharpnessOnGround * Time.deltaTime);
 
-                    // jumping
-                    if (IsGrounded && m_InputHandler.GetJumpInputDown())
-                    {
-                        // force the crouch state to false
-                        if (SetCrouchingState(false, false))
-                        {
-                            // start by canceling out the vertical component of our velocity
-                            CharacterVelocity = new Vector3(CharacterVelocity.x, 0f, CharacterVelocity.z);
-
-                            // then, add the jumpSpeed value upwards
-                            CharacterVelocity += Vector3.up * JumpForce;
-
-                            // play sound
-                            AudioSource.PlayOneShot(JumpSfx);
-
-                            // remember last time we jumped because we need to prevent snapping to ground for a short time
-                            m_LastTimeJumped = Time.time;
-                            HasJumpedThisFrame = true;
-
-                            // Force grounding to false
-                            IsGrounded = false;
-                            m_GroundNormal = Vector3.up;
-                        }
-                    }
-
                     // footsteps sound
                     float chosenFootstepSfxFrequency =
-                        (isSprinting ? FootstepSfxFrequencyWhileSprinting : FootstepSfxFrequency);
+                        (_bIsSprinting ? FootstepSfxFrequencyWhileSprinting : FootstepSfxFrequency);
                     if (m_FootstepDistanceCounter >= 1f / chosenFootstepSfxFrequency)
                     {
                         m_FootstepDistanceCounter = 0f;
@@ -384,6 +367,90 @@ namespace Unity.FPS.Gameplay
 
                 CharacterVelocity = Vector3.ProjectOnPlane(CharacterVelocity, hit.normal);
             }
+        }
+
+        public void OnMove(InputValue value)
+        {
+            if (!IsOwner)
+                return;
+
+            Vector2 moveAxis = value.Get<Vector2>();
+
+            _horizontalAxis = new Vector3(moveAxis.x, 0, moveAxis.y);
+        }
+
+        public void OnSprint(InputValue value)
+        {
+            if (!IsOwner)
+                return;
+
+            _bIsSprinting = value.isPressed;
+        }
+
+        private void HandleCameraRotation(float xAxis, float yAxis)
+        {
+            //TODO Adapte the sensitivity depending on the device controller
+            // rotate the transform with the input speed around its local Y axis
+            transform.Rotate(
+                new Vector3(0f, (xAxis * 0.001f * RotationSpeed * RotationMultiplier),
+                    0f), Space.Self);
+            
+
+            // vertical camera rotation
+            
+            // add vertical inputs to the camera's vertical angle
+            m_CameraVerticalAngle += yAxis * 0.001f * RotationSpeed * RotationMultiplier;
+
+            // limit the camera's vertical angle to min/max
+            m_CameraVerticalAngle = Mathf.Clamp(m_CameraVerticalAngle, -89f, 89f);
+
+            // apply the vertical angle as a local rotation to the camera transform along its right axis (makes it pivot up and down)
+            PlayerCamera.transform.localEulerAngles = new Vector3(m_CameraVerticalAngle, 0, 0);
+             
+        }
+
+        public void OnLookAt(InputValue value)
+        {
+            if (!IsOwner)
+                return;
+
+            _lookAtAxis = value.Get<Vector2>();
+            
+        }
+
+        private void HandleJump()
+        {
+            if (IsGrounded && _bJump)
+            {
+                // force the crouch state to false
+                if (SetCrouchingState(false, false))
+                {
+                    // start by canceling out the vertical component of our velocity
+                    CharacterVelocity = new Vector3(CharacterVelocity.x, 0f, CharacterVelocity.z);
+
+                    // then, add the jumpSpeed value upwards
+                    CharacterVelocity += Vector3.up * JumpForce;
+
+                    // play sound
+                    AudioSource.PlayOneShot(JumpSfx);
+
+                    // remember last time we jumped because we need to prevent snapping to ground for a short time
+                    m_LastTimeJumped = Time.time;
+                    HasJumpedThisFrame = true;
+
+                    // Force grounding to false
+                    IsGrounded = false;
+                    m_GroundNormal = Vector3.up;
+                }
+            }
+        }
+
+        public void OnJump(InputValue value)
+        {
+            if (!IsOwner)
+                return;
+
+            _bJump = value.isPressed;
         }
 
         // Returns true if the slope angle represented by the given normal is under the slope angle limit of the character controller
@@ -472,6 +539,14 @@ namespace Unity.FPS.Gameplay
 
             IsCrouching = crouched;
             return true;
+        }
+
+        public void OnCrouch(InputValue value)
+        {
+            if (!IsOwner)
+                return;
+
+            SetCrouchingState(value.isPressed, false);
         }
     }
 }
