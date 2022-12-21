@@ -1,4 +1,5 @@
-﻿using Unity.FPS.Game;
+﻿using System.Collections.Generic;
+using Unity.FPS.Game;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
@@ -125,6 +126,8 @@ namespace Unity.FPS.Gameplay
         private Vector3 _horizontalAxis;
         private bool _bIsSprinting;
 
+        [SerializeField] private Animator _playerAnimator;
+
     #endregion
 
     public float RotationMultiplier
@@ -168,6 +171,7 @@ namespace Unity.FPS.Gameplay
         {
             if (!IsOwner)
             {
+                ProjectUtils.SetLayerRecursively(PlayerMesh ,LayerMask.NameToLayer("OtherPlayer"));
                 Destroy(PlayerCamera);
                 return;
             }
@@ -199,6 +203,9 @@ namespace Unity.FPS.Gameplay
             SetCrouchingState(false, true);
             UpdateCharacterHeight(true);
         }
+
+
+        public GameObject PlayerMesh;
 
         void Update()
         {
@@ -296,6 +303,14 @@ namespace Unity.FPS.Gameplay
         void HandleCharacterMovement()
         {
             // character movement handling
+            if (_horizontalAxis != Vector3.zero)
+            {
+                _playerAnimator.SetBool("Run", true);
+            }
+            else
+            {
+                _playerAnimator.SetBool("Run", false);
+            }
             {
                 if (_bIsSprinting)
                 {
@@ -441,7 +456,13 @@ namespace Unity.FPS.Gameplay
                     // Force grounding to false
                     IsGrounded = false;
                     m_GroundNormal = Vector3.up;
+                    
+                    _playerAnimator.SetBool("Jump", true);
                 }
+            }
+            else if (IsGrounded)
+            {
+                _playerAnimator.SetBool("Jump", false);
             }
         }
 

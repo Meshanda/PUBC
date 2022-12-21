@@ -24,6 +24,15 @@
                     "initialStateCheck": true
                 },
                 {
+                    "name": "ShootHold",
+                    "type": "Button",
+                    "id": "db72f9a2-390c-4e0a-bceb-49963c0fe5a9",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "91a9bf45-f5e9-4026-aabf-8bd09ea82328",
@@ -261,6 +270,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14138113-3875-4aab-87c2-ba8cf4bf0ba4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootHold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

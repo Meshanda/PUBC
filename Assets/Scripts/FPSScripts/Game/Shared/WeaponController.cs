@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -26,7 +27,7 @@ namespace Unity.FPS.Game
     }
 
     [RequireComponent(typeof(AudioSource))]
-    public class WeaponController : MonoBehaviour
+    public class WeaponController : NetworkBehaviour
     {
         [Header("Information")] [Tooltip("The name that will be displayed in the UI for this weapon")]
         public string WeaponName;
@@ -426,6 +427,9 @@ namespace Unity.FPS.Game
         {
             if (IsCharging)
             {
+                if (!IsOwner)
+                    return false;
+                
                 HandleShoot();
 
                 CurrentCharge = 0f;
@@ -439,6 +443,9 @@ namespace Unity.FPS.Game
 
         void HandleShoot()
         {
+            if (!IsOwner)
+                return;
+            
             int bulletsPerShotFinal = ShootType == WeaponShootType.Charge
                 ? Mathf.CeilToInt(CurrentCharge * BulletsPerShot)
                 : BulletsPerShot;
@@ -446,10 +453,7 @@ namespace Unity.FPS.Game
             // spawn all bullets with random direction
             for (int i = 0; i < bulletsPerShotFinal; i++)
             {
-                Vector3 shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
-                ProjectileBase newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
-                    Quaternion.LookRotation(shotDirection));
-                newProjectile.Shoot(this);
+                ShootBulletServerRpc();
             }
 
             // muzzle flash
@@ -488,6 +492,22 @@ namespace Unity.FPS.Game
 
             OnShoot?.Invoke();
             OnShootProcessed?.Invoke();
+        }
+
+        [ServerRpc]
+        public void ShootBulletServerRpc()
+        {
+            Vector3 shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
+            ProjectileBase newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
+                Quaternion.LookRotation(shotDirection));
+            
+            
+            newProjectile.Owner = Owner;
+            newProjectile.InheritedMuzzleVelocity = MuzzleWorldVelocity;
+            newProjectile.InitialCharge = CurrentCharge;
+                
+            newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+            newProjectile.ShootClientRpc();
         }
 
         public Vector3 GetShotDirectionWithinSpread(Transform shootTransform)
