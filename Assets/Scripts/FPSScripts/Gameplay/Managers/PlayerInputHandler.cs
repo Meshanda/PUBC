@@ -1,9 +1,10 @@
 ﻿using Unity.FPS.Game;
 using UnityEngine;
+using Unity.Netcode;
 
 namespace Unity.FPS.Gameplay
 {
-    public class PlayerInputHandler : MonoBehaviour
+    public class PlayerInputHandler : NetworkBehaviour
     {
         [Tooltip("Sensitivity multiplier for moving the camera around")]
         public float LookSensitivity = 1f;
@@ -39,6 +40,11 @@ namespace Unity.FPS.Gameplay
         void LateUpdate()
         {
             m_FireInputWasHeld = GetFireInputHeld();
+        }
+
+        public override void OnNetworkSpawn()
+        {
+            if (!IsOwner) enabled = false;
         }
 
         public bool CanProcessInput()

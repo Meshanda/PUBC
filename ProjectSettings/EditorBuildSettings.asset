@@ -22,17 +22,14 @@ EditorBuildSettings:
     guid: fcd7f0cf1bb020c4791acfe436ed6fdd
   - enabled: 1
     path: Assets/Scenes/Lobby.unity
-    guid: 5ec6a99690db497408dfd808ee78c4d9
+    guid: 3e37c9c2fa251d846879dda14b12fdb1
   - enabled: 1
-    path: Assets/Scenes/Elvyn.unity
+    path: Assets/Scenes/GameScene.unity
     guid: d65d3ef3ae1327f49828d61323760d00
+  - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 91e6c56751c5cb34382c330ab86a2e8a
   - enabled: 1
     path: Assets/Scenes/MyScene.unity
     guid: 4e79dd2c67e5da940bb4b2812d2322d8
-  - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: c07da76b1bab59d4fbf049ea3b0cfd0e
-  - enabled: 1
-    path: Assets/Scenes/LionelDev.unity
-    guid: 372fd691b614fe4489cd15823acfe17f
   m_configObjects: {}
