@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using ScriptableObjects.Variables;
+using UnityEngine.Events;
 
 public class GameManager : NetworkBehaviour
 {
     public static GameManager instance;
+    public UnityAction OnGameEnd;
+    public UnityAction OnGameRestart;
     [SerializeField]private IntVariable _maxWinKill;
 
     private void Start()
@@ -29,15 +32,25 @@ public class GameManager : NetworkBehaviour
         if (changedPlayersKills.Value.killsAmount >= _maxWinKill.value)
         {
             Debug.Log($"Player with the id: {changedPlayersKills.Value.clientId} won !");
-            GameFinished();
+            StartCoroutine(GameFinished());
         }
     }
 
-    public void GameFinished(bool byTime = false)
+    public IEnumerator GameFinished(bool byTime = false)
     {
+        OnGameEnd.Invoke();
         if (byTime)
             Debug.Log("Game finished by time");
         else
             Debug.Log("Game is finished by kills");
+
+        yield return new WaitForSeconds(3f);
+
+        RestartGame();
+    }
+
+    private void RestartGame()
+    {
+        OnGameRestart.Invoke();
     }
 }

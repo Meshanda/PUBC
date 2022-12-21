@@ -16,12 +16,11 @@ public class GameInstance : NetworkBehaviour
     }
     private void Start()
     {
-        if (instance == null)
+        if (instance == null) 
             instance = this;
         else
             Destroy(this);
     }
-
     public override void OnNetworkSpawn()
     {
         if(IsServer || IsHost)
@@ -33,6 +32,8 @@ public class GameInstance : NetworkBehaviour
 
             NetworkManager.OnServerStarted += OnServerStarted;
             NetworkManager.OnClientConnectedCallback += AddPlayer;
+
+            GameManager.instance.OnGameRestart += OnGameRestart;
         }
     }
     public void AddKill(ulong clientID, int killAmountToAdd = 1)
@@ -81,12 +82,32 @@ public class GameInstance : NetworkBehaviour
                 break;
             }
         }
+        OrderPlayerKills();
     }
-
     public void OnPlayerKill(ulong killerClientId)
     {
-        Debug.Log("killer id " + killerClientId);
         AddKill(killerClientId);
+    }
+    public void OnGameRestart()
+    {
+        playersKills = new NetworkList<PlayerKillAmount>();
+    }
+    private void OrderPlayerKills()
+    {
+        int n = playersKills.Count;
+        for (int i = 0; i < n - 1; i++)
+            for (int j = 0; j < n - i - 1; j++)
+                if (playersKills[j].killsAmount > playersKills[j + 1].killsAmount)
+                {
+                    // swap temp and arr[i]
+                    PlayerKillAmount temp = playersKills[j];
+                    playersKills[j] = playersKills[j + 1];
+                    playersKills[j + 1] = temp;
+                }
+        foreach (var playerKills in playersKills)
+        {
+            Debug.Log($"client {playerKills.clientId} have {playerKills.killsAmount} kills");
+        }
     }
 }
 
