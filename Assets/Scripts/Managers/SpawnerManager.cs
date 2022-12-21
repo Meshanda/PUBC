@@ -36,22 +36,6 @@ public class SpawnerManager : NetworkBehaviour
         NetworkManager.OnClientConnectedCallback += RespawnPlayer;
     }
 
-    public override void OnNetworkSpawn()
-    {
-        foreach (var client in NetworkManager.ConnectedClients)
-        {
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { client.Key }
-                }
-            };
-
-            SetupHealthBarClientRpc(clientRpcParams);
-        }
-    }
-
     public void RespawnPlayer(ulong ownerId)
     {
         //Generate random x,z,y position on the terrain
@@ -63,20 +47,10 @@ public class SpawnerManager : NetworkBehaviour
         yVal = yVal + yOffset;
 
         //Generate the Prefab on the generated position
-        GameObject playerGO = Instantiate(prefab, new Vector3(randX, yVal, randZ), Quaternion.identity);
+        GameObject playerGO = (GameObject)Instantiate(prefab, new Vector3(randX, yVal, randZ), Quaternion.identity);
 
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
-
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { ownerId }
-            }
-        };
-
-        SetupHealthBarClientRpc(clientRpcParams);
 
         StartCoroutine(InvincibilityOnRespawn(playerGO));
     }
@@ -94,11 +68,5 @@ public class SpawnerManager : NetworkBehaviour
         yield return new WaitForSeconds(respawnInvincibilityTime);
 
         playerHealth.Invincible.Value = false;
-    }
-
-    [ClientRpc]
-    private void SetupHealthBarClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        PlayerHealthBar.instance.SetupHealthBar(NetworkManager.LocalClient.PlayerObject.gameObject);
     }
 }
