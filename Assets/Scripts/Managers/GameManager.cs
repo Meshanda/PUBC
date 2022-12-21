@@ -12,7 +12,7 @@ public class GameManager : NetworkBehaviour
     public UnityAction OnGameRestart;
     [SerializeField]private IntVariable _maxWinKill;
 
-    private void Start()
+    private void Awake()
     {
         if (instance == null)
         {

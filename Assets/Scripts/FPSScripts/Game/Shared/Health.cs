@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -13,7 +14,7 @@ namespace Unity.FPS.Game
 
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
-        public UnityAction<ulong> OnDie;
+        public UnityAction<UInt64> OnDie;
 
         public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
         public bool Invincible { get; set; }
@@ -82,7 +83,7 @@ namespace Unity.FPS.Game
             // call OnDamage action
             OnDamaged?.Invoke(MaxHealth, null);
 
-            HandleDeath();
+            HandleDeath(gameObject);
         }
 
         void HandleDeath(GameObject killer = null)
@@ -94,7 +95,7 @@ namespace Unity.FPS.Game
             if (CurrentHealth.Value <= 0f)
             {
                 m_IsDead = true;
-                OnDie?.Invoke(killer.GetComponent<NetworkObject>().OwnerClientId);
+                OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId);
             }
         }
     }

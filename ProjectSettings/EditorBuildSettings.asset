@@ -24,7 +24,7 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 3e37c9c2fa251d846879dda14b12fdb1
   - enabled: 1
-    path: Assets/Scenes/Elvyn.unity
+    path: Assets/Scenes/GameScene.unity
     guid: d65d3ef3ae1327f49828d61323760d00
   - enabled: 1
     path: Assets/Scenes/MainMenu.unity
