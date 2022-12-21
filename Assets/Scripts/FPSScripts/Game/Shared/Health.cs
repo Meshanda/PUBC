@@ -7,7 +7,8 @@ namespace Unity.FPS.Game
 {
     public class Health : NetworkBehaviour
     {
-        [Tooltip("Maximum amount of health")] public float MaxHealth = 10f;
+        [Tooltip("Maximum amount of health")] 
+        public float MaxHealth = 10f;
 
         [Tooltip("Health ratio at which the critical health vignette starts appearing")]
         public float CriticalHealthRatio = 0.3f;
