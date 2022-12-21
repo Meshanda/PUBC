@@ -9,6 +9,7 @@ public class SpawnerManager : NetworkBehaviour
     public GameObject prefab;
     public Terrain terrain;
     public float yOffset = 1f;
+    public float respawnInvincibilityTime = 3f;
 
     private float terrainWidth;
     private float terrainLength;
@@ -49,10 +50,21 @@ public class SpawnerManager : NetworkBehaviour
 
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
+        StartCoroutine(InvincibilityOnRespawn(playerGO));
     }
 
     private void OnPlayerDied(ulong killerId, ulong deadClientId)
     {
         RespawnPlayer(deadClientId);
+    }
+
+    private IEnumerator InvincibilityOnRespawn(GameObject playerGO)
+    {
+        Health playerHealth = playerGO.GetComponent<Health>();
+        playerHealth.Invincible.Value = true;
+
+        yield return new WaitForSeconds(respawnInvincibilityTime);
+
+        playerHealth.Invincible.Value = false;
     }
 }
