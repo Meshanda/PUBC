@@ -15,27 +15,81 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "TargetMouse",
+                    "name": "LookAt",
                     "type": "Value",
                     "id": "55d480f4-45a3-4b50-9f7f-b11012ab8ac9",
                     "expectedControlType": "Vector2",
-                    "processors": "",
+                    "processors": "InvertVector2(invertX=false)",
                     "interactions": "",
                     "initialStateCheck": true
                 },
                 {
-                    "name": "TargetGP",
-                    "type": "Value",
-                    "id": "e50cea22-3f0f-4ec7-9b38-68faa0b623bd",
-                    "expectedControlType": "Vector2",
+                    "name": "ShootHold",
+                    "type": "Button",
+                    "id": "db72f9a2-390c-4e0a-bceb-49963c0fe5a9",
+                    "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "91a9bf45-f5e9-4026-aabf-8bd09ea82328",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Sprint",
+                    "type": "Button",
+                    "id": "79b890e5-b7f5-4629-982f-a30a9dbd0738",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "530b68b4-d687-45f4-8275-73353d8fde15",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=2)",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Reload",
+                    "type": "Button",
+                    "id": "c4030092-ed87-4505-9721-5af59a17df99",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Aim",
+                    "type": "Button",
+                    "id": "797750af-d790-48ce-bc17-86968601e401",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "SwitchButton",
+                    "type": "Value",
+                    "id": "a318ca3e-6598-49b4-b5e3-9120f65536e5",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Crouch",
+                    "type": "Button",
+                    "id": "5c131e7c-b48c-4ee3-a079-e436a5f6633f",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=2)",
@@ -112,11 +166,22 @@
                 {
                     "name": "",
                     "id": "7a9f25e0-df06-4808-8ba3-2fa6dbff8277",
-                    "path": "<Mouse>/position",
+                    "path": "<Mouse>/delta",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TargetMouse",
+                    "action": "LookAt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aa897707-21f9-4ca9-adf4-fae6f5838402",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LookAt",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -133,12 +198,89 @@
                 },
                 {
                     "name": "",
-                    "id": "6e17b6f2-47c5-4953-ad9d-e82ff54c1f90",
-                    "path": "<Gamepad>/rightStick",
+                    "id": "3b04704a-43bf-4ced-953f-7aa44d585348",
+                    "path": "<Keyboard>/leftShift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "TargetGP",
+                    "action": "Sprint",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "17f49df5-a435-4623-8ba5-0042f0a59e9e",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "82c2e7d3-ace3-4aef-a1ba-edb384c11590",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reload",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97dd34e8-164a-4000-ba5b-268b487dea56",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "558ee4a0-05d4-4e9a-b272-a0aa3814576a",
+                    "path": "<Mouse>/scroll/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f2695f65-208b-4a0c-addc-32a5fc79bde4",
+                    "path": "<Mouse>/scroll/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "SwitchButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "921d7c80-ac40-4f68-91dc-72ee7b745ac3",
+                    "path": "<Keyboard>/c",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Crouch",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "14138113-3875-4aab-87c2-ba8cf4bf0ba4",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShootHold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
