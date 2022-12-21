@@ -19,9 +19,6 @@ public class SpawnerManager : NetworkBehaviour
     private float xTerrainPos;
     private float zTerrainPos;
 
-    [SerializeField]
-    private AudioSource respawnSoundEffect;
-
 
     private void Awake()
     {
@@ -74,7 +71,6 @@ public class SpawnerManager : NetworkBehaviour
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
 
-
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -90,7 +86,6 @@ public class SpawnerManager : NetworkBehaviour
     private void OnPlayerDied(ulong killerId, ulong deadClientId)
     {
         RespawnPlayer(deadClientId);
-        respawnSoundEffect.Play();
     }
 
     private IEnumerator InvincibilityOnRespawn(GameObject playerGO)
