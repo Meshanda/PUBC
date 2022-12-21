@@ -17,7 +17,7 @@ namespace Unity.FPS.Game
         public UnityAction<UInt64,ulong> OnDie;
 
         public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
-        public bool Invincible { get; set; }
+        public NetworkVariable<bool> Invincible = new NetworkVariable<bool>();
         public bool CanPickup() => CurrentHealth.Value < MaxHealth;
 
         public float GetRatio() => CurrentHealth.Value / MaxHealth;
@@ -52,7 +52,7 @@ namespace Unity.FPS.Game
         [ServerRpc]
         public void TakeDamageServerRpc(float damage, ulong damageSourceClient)
         {
-            if (Invincible)
+            if (Invincible.Value)
                 return;
 
             float healthBefore = CurrentHealth.Value;
@@ -73,7 +73,7 @@ namespace Unity.FPS.Game
         {
             if (Input.GetKeyDown(KeyCode.K) && GetComponent<NetworkObject>().IsOwner)
             {
-                TakeDamage(MaxHealth, gameObject);
+                TakeDamage(MaxHealth/2, gameObject);
             }
         }
         public void Kill()
@@ -96,6 +96,7 @@ namespace Unity.FPS.Game
             {
                 m_IsDead = true;
                 OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId,OwnerClientId);
+                Destroy(gameObject);
             }
         }
     }

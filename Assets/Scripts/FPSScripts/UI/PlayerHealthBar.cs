@@ -2,6 +2,7 @@
 using Unity.FPS.Gameplay;
 using UnityEngine;
 using UnityEngine.UI;
+using Unity.Netcode;
 
 namespace Unity.FPS.UI
 {
@@ -12,16 +13,21 @@ namespace Unity.FPS.UI
 
         Health m_PlayerHealth;
 
-        void Start()
+        public static PlayerHealthBar instance;
+
+        private void Awake()
         {
-            PlayerCharacterController playerCharacterController =
-                GameObject.FindObjectOfType<PlayerCharacterController>();
-            DebugUtility.HandleErrorIfNullFindObject<PlayerCharacterController, PlayerHealthBar>(
-                playerCharacterController, this);
+            if (instance == null)
+                instance = this;
+            else
+                Destroy(this);
+        }
+
+        public void SetupHealthBar(GameObject localPlayer)
+        {
+            PlayerCharacterController playerCharacterController = localPlayer.GetComponent<PlayerCharacterController>();
 
             m_PlayerHealth = playerCharacterController.GetComponent<Health>();
-            DebugUtility.HandleErrorIfNullGetComponent<Health, PlayerHealthBar>(m_PlayerHealth, this,
-                playerCharacterController.gameObject);
         }
 
         void Update()
