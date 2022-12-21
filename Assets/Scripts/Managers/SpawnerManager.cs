@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.FPS.Game;
+using Unity.FPS.Gameplay;
 using Unity.FPS.UI;
 using Unity.Netcode;
 using UnityEngine;
@@ -18,6 +19,10 @@ public class SpawnerManager : NetworkBehaviour
     private float xTerrainPos;
     private float zTerrainPos;
 
+    [SerializeField]
+    private AudioSource respawnSoundEffect;
+
+
     private void Awake()
     {
         if(!IsServer && !IsHost) enabled = false;
@@ -34,6 +39,7 @@ public class SpawnerManager : NetworkBehaviour
             RespawnPlayer(client.Key);
         }
         NetworkManager.OnClientConnectedCallback += RespawnPlayer;
+
     }
 
     public override void OnNetworkSpawn()
@@ -68,6 +74,7 @@ public class SpawnerManager : NetworkBehaviour
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
 
+
         ClientRpcParams clientRpcParams = new ClientRpcParams
         {
             Send = new ClientRpcSendParams
@@ -77,13 +84,13 @@ public class SpawnerManager : NetworkBehaviour
         };
 
         SetupHealthBarClientRpc(clientRpcParams);
-
         StartCoroutine(InvincibilityOnRespawn(playerGO));
     }
 
     private void OnPlayerDied(ulong killerId, ulong deadClientId)
     {
         RespawnPlayer(deadClientId);
+        respawnSoundEffect.Play();
     }
 
     private IEnumerator InvincibilityOnRespawn(GameObject playerGO)
