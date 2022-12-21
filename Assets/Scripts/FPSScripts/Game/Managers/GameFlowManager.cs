@@ -46,7 +46,7 @@ namespace Unity.FPS.Game
 
         void Update()
         {
-            if (GameIsEnding)
+            /*if (GameIsEnding)
             {
                 float timeRatio = 1 - (m_TimeLoadEndGameScene - Time.time) / EndSceneLoadDelay;
                 EndGameFadeCanvasGroup.alpha = timeRatio;
@@ -59,7 +59,7 @@ namespace Unity.FPS.Game
                     SceneManager.LoadScene(m_SceneToLoad);
                     GameIsEnding = false;
                 }
-            }
+            }*/
         }
 
         void OnAllObjectivesCompleted(AllObjectivesCompletedEvent evt) => EndGame(true);
