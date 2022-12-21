@@ -252,7 +252,7 @@ namespace Unity.FPS.Gameplay
             HandleCharacterMovement();
         }
 
-        void OnDie(ulong killerId)
+        void OnDie(ulong killerId, ulong deadClientId)
         {
             IsDead = true;
 

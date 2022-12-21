@@ -14,7 +14,7 @@ namespace Unity.FPS.Game
 
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
-        public UnityAction<UInt64> OnDie;
+        public UnityAction<UInt64,ulong> OnDie;
 
         public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
         public bool Invincible { get; set; }
@@ -95,7 +95,7 @@ namespace Unity.FPS.Game
             if (CurrentHealth.Value <= 0f)
             {
                 m_IsDead = true;
-                OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId);
+                OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId,OwnerClientId);
             }
         }
     }

@@ -84,7 +84,7 @@ public class GameInstance : NetworkBehaviour
         }
         OrderPlayerKills();
     }
-    public void OnPlayerKill(ulong killerClientId)
+    public void OnPlayerKill(ulong killerClientId, ulong deadClientId)
     {
         AddKill(killerClientId);
     }
@@ -104,10 +104,6 @@ public class GameInstance : NetworkBehaviour
                     playersKills[j] = playersKills[j + 1];
                     playersKills[j + 1] = temp;
                 }
-        foreach (var playerKills in playersKills)
-        {
-            Debug.Log($"client {playerKills.clientId} have {playerKills.killsAmount} kills");
-        }
     }
 }
 

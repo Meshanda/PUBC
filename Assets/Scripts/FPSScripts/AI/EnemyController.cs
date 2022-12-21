@@ -357,7 +357,7 @@ namespace Unity.FPS.AI
             }
         }
 
-        void OnDie(ulong killerId)
+        void OnDie(ulong killerId, ulong deadClientId)
         {
             // spawn a particle system when dying
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
