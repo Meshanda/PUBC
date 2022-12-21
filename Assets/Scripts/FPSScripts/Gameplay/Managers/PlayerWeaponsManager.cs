@@ -1,12 +1,14 @@
 ﻿using System.Collections.Generic;
 using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.InputSystem;
 
 namespace Unity.FPS.Gameplay
 {
     [RequireComponent(typeof(PlayerInputHandler))]
-    public class PlayerWeaponsManager : MonoBehaviour
+    public class PlayerWeaponsManager : NetworkBehaviour
     {
         public enum WeaponSwitchState
         {
@@ -16,8 +18,8 @@ namespace Unity.FPS.Gameplay
             PutUpNew,
         }
 
-        [Tooltip("List of weapon the player will start with")]
-        public List<WeaponController> StartingWeapons = new List<WeaponController>();
+        [Tooltip("The weapon the player will start with")]
+        public WeaponController StartingWeapon;
 
         [Header("References")] [Tooltip("Secondary camera used to avoid seeing weapon go throw geometries")]
         public Camera WeaponCamera;
@@ -92,9 +94,16 @@ namespace Unity.FPS.Gameplay
         float m_TimeStartedWeaponSwitch;
         WeaponSwitchState m_WeaponSwitchState;
         int m_WeaponSwitchNewWeaponIndex;
+        private bool _bShootHold;
+        private bool _bShoot;
 
         void Start()
         {
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             ActiveWeaponIndex = -1;
             m_WeaponSwitchState = WeaponSwitchState.Down;
 
@@ -111,16 +120,18 @@ namespace Unity.FPS.Gameplay
             OnSwitchedToWeapon += OnWeaponSwitched;
 
             // Add starting weapons
-            foreach (var weapon in StartingWeapons)
-            {
-                AddWeapon(weapon);
-            }
+            AddStartWeapon();
 
             SwitchWeapon(true);
         }
 
         void Update()
         {
+            if (!IsOwner)
+            {
+                return;
+            }
+            
             // shoot handling
             WeaponController activeWeapon = GetActiveWeapon();
 
@@ -140,9 +151,8 @@ namespace Unity.FPS.Gameplay
 
                 // handle shooting
                 bool hasFired = activeWeapon.HandleShootInputs(
-                    m_InputHandler.GetFireInputDown(),
-                    m_InputHandler.GetFireInputHeld(),
-                    m_InputHandler.GetFireInputReleased());
+                    _bShoot,
+                    _bShootHold, !_bShootHold);
 
                 // Handle accumulating recoil
                 if (hasFired)
@@ -187,6 +197,23 @@ namespace Unity.FPS.Gameplay
                     }
                 }
             }
+        }
+
+
+        public void OnShoot(InputValue value)
+        {
+            if(!IsOwner)
+                return;
+            
+            _bShoot = value.isPressed;
+        }
+
+        public void OnShootHold(InputValue value)
+        {
+            if(!IsOwner)
+                return;
+            
+            _bShootHold = value.isPressed;
         }
 
 
@@ -422,6 +449,56 @@ namespace Unity.FPS.Gameplay
                 m_WeaponMainLocalPosition = Vector3.Lerp(DownWeaponPosition.localPosition,
                     DefaultWeaponPosition.localPosition, switchingTimeFactor);
             }
+        }
+
+        public void AddStartWeapon()
+        {
+            // if we already hold this weapon type (a weapon coming from the same source prefab), don't add the weapon
+            if (HasWeapon(StartingWeapon) != null)
+            {
+                return;
+            }
+
+            // search our weapon slots for the first free one, assign the weapon to it, and return true if we found one. Return false otherwise
+            for (int i = 0; i < m_WeaponSlots.Length; i++)
+            {
+                // only add the weapon if the slot is free
+                if (m_WeaponSlots[i] == null)
+                {
+                    StartingWeapon.transform.localPosition = Vector3.zero;
+                    StartingWeapon.transform.localRotation = Quaternion.identity;
+
+                    // Set owner to this gameObject so the weapon can alter projectile/damage logic accordingly
+                    StartingWeapon.Owner = gameObject;
+                    StartingWeapon.SourcePrefab = StartingWeapon.gameObject;
+                    StartingWeapon.ShowWeapon(false);
+
+                    // Assign the first person layer to the weapon
+                    int layerIndex =
+                        Mathf.RoundToInt(Mathf.Log(FpsWeaponLayer.value,
+                            2)); // This function converts a layermask to a layer index
+                    foreach (Transform t in StartingWeapon.gameObject.GetComponentsInChildren<Transform>(true))
+                    {
+                        t.gameObject.layer = layerIndex;
+                    }
+
+                    m_WeaponSlots[i] = StartingWeapon;
+
+                    if (OnAddedWeapon != null)
+                    {
+                        OnAddedWeapon.Invoke(StartingWeapon, i);
+                    }
+
+                    return;
+                }
+            }
+
+            // Handle auto-switching to weapon if no weapons currently
+            if (GetActiveWeapon() == null)
+            {
+                SwitchWeapon(true);
+            }
+
         }
 
         // Adds a weapon to our inventory
