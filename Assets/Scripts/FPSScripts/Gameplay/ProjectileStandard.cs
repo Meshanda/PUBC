@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.FPS.Gameplay
@@ -66,19 +68,24 @@ namespace Unity.FPS.Gameplay
 
         const QueryTriggerInteraction k_TriggerInteraction = QueryTriggerInteraction.Collide;
 
+        private bool _bAlreadyHit;
+
         void OnEnable()
         {
             m_ProjectileBase = GetComponent<ProjectileBase>();
             DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ProjectileStandard>(m_ProjectileBase, this,
                 gameObject);
 
-            m_ProjectileBase.OnShoot += OnShoot;
+            m_ProjectileBase.OnShoot += OnShootPS;
 
             Destroy(gameObject, MaxLifeTime);
         }
 
-        new void OnShoot()
+        new void OnShootPS()
         {
+            if (!IsOwner)
+                return;
+            
             m_ShootTime = Time.time;
             m_LastRootPosition = Root.position;
             m_Velocity = transform.forward * Speed;
@@ -109,20 +116,14 @@ namespace Unity.FPS.Gameplay
                 {
                     m_HasTrajectoryOverride = false;
                 }
-
-                if (Physics.Raycast(playerWeaponsManager.WeaponCamera.transform.position, cameraToMuzzle.normalized,
-                    out RaycastHit hit, cameraToMuzzle.magnitude, HittableLayers, k_TriggerInteraction))
-                {
-                    if (IsHitValid(hit))
-                    {
-                        OnHit(hit.point, hit.normal, hit.collider);
-                    }
-                }
             }
         }
 
         void Update()
         {
+            if (!IsOwner)
+                return;
+            
             // Move
             transform.position += m_Velocity * Time.deltaTime;
             if (InheritWeaponVelocity)
@@ -161,6 +162,9 @@ namespace Unity.FPS.Gameplay
                 m_Velocity += Vector3.down * GravityDownAcceleration * Time.deltaTime;
             }
 
+            if (!IsOwner)
+                return;
+
             // Hit detection
             {
                 RaycastHit closestHit = new RaycastHit();
@@ -181,7 +185,7 @@ namespace Unity.FPS.Gameplay
                     }
                 }
 
-                if (foundHit)
+                if (foundHit && _bAlreadyHit == false)
                 {
                     // Handle case of casting while already inside a collider
                     if (closestHit.distance <= 0f)
@@ -190,12 +194,14 @@ namespace Unity.FPS.Gameplay
                         closestHit.normal = -transform.forward;
                     }
 
+                    _bAlreadyHit = true;
                     OnHit(closestHit.point, closestHit.normal, closestHit.collider);
                 }
             }
 
             m_LastRootPosition = Root.position;
         }
+        
 
         bool IsHitValid(RaycastHit hit)
         {
@@ -256,8 +262,7 @@ namespace Unity.FPS.Gameplay
                 AudioUtility.CreateSFX(ImpactSfxClip, point, AudioUtility.AudioGroups.Impact, 1f, 3f);
             }
 
-            // Self Destruct
-            Destroy(this.gameObject);
+            TryDestroying();
         }
 
         void OnDrawGizmosSelected()

@@ -1,4 +1,5 @@
-﻿using Unity.Netcode;
+﻿using System;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -24,6 +25,29 @@ namespace Unity.FPS.Game
             InitialDirection = transform.forward;
 
             OnShoot?.Invoke();
+        }
+
+
+        public void TryDestroying(UInt16 life = 0)
+        {
+            if (IsSpawned || life > 15)
+            {
+                DestroyObjectServerRpc();
+            }
+            else
+            {
+                life++;
+                TryDestroying(life);
+            }
+
+        }
+        
+        
+        [ServerRpc]
+        public void DestroyObjectServerRpc()
+        {
+            GetComponent<NetworkObject>().Despawn();
+            Destroy(gameObject);
         }
     }
 }

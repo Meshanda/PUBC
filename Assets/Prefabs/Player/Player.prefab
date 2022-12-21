@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 6878965727442188379}
   - component: {fileID: 3643606347430768852}
   - component: {fileID: 7492729729474256724}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 419385456094870383, guid: 0000000000000000d000000000000000, type: 0}
@@ -745,7 +745,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 19255
+    m_Bits: 84791
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -1086,6 +1086,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Weapon_Blaster
+      objectReference: {fileID: 0}
+    - target: {fileID: 6736714930940421615, guid: b318fabc73446b746a1005cede0c4ceb,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b318fabc73446b746a1005cede0c4ceb, type: 3}

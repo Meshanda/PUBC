@@ -101,6 +101,7 @@ namespace Unity.FPS.Gameplay
         {
             if (!IsOwner)
             {
+                ProjectUtils.SetLayerRecursively(StartingWeapon.gameObject, LayerMask.NameToLayer("Player"));
                 return;
             }
             

@@ -160,6 +160,9 @@ namespace Unity.FPS.Gameplay
         const float k_JumpGroundingPreventionTime = 0.2f;
         const float k_GroundCheckDistanceInAir = 0.07f;
 
+
+        public GameObject PlayerMesh;
+
         void Awake()
         {
             ActorsManager actorsManager = FindObjectOfType<ActorsManager>();
@@ -172,6 +175,7 @@ namespace Unity.FPS.Gameplay
             if (!IsOwner)
             {
                 ProjectUtils.SetLayerRecursively(PlayerMesh ,LayerMask.NameToLayer("OtherPlayer"));
+                gameObject.layer = LayerMask.NameToLayer("OtherPlayer");
                 Destroy(PlayerCamera);
                 return;
             }
@@ -203,9 +207,6 @@ namespace Unity.FPS.Gameplay
             SetCrouchingState(false, true);
             UpdateCharacterHeight(true);
         }
-
-
-        public GameObject PlayerMesh;
 
         void Update()
         {

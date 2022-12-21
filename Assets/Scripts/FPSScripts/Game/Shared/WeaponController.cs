@@ -508,6 +508,9 @@ namespace Unity.FPS.Game
                 
             newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
             newProjectile.ShootClientRpc();
+            
+            
+            OnShoot?.Invoke();
         }
 
         public Vector3 GetShotDirectionWithinSpread(Transform shootTransform)
