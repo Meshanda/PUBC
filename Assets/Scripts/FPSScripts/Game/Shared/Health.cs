@@ -73,7 +73,7 @@ namespace Unity.FPS.Game
         {
             if (Input.GetKeyDown(KeyCode.K) && GetComponent<NetworkObject>().IsOwner)
             {
-                TakeDamage(MaxHealth, gameObject);
+                TakeDamage(MaxHealth/2, gameObject);
             }
         }
         public void Kill()

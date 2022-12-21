@@ -225,24 +225,10 @@ namespace Unity.FPS.Gameplay
 
             // landing
             if (IsGrounded && !wasGrounded)
-            {
-                // Fall damage
-                float fallSpeed = -Mathf.Min(CharacterVelocity.y, m_LatestImpactSpeed.y);
-                float fallSpeedRatio = (fallSpeed - MinSpeedForFallDamage) /
-                                       (MaxSpeedForFallDamage - MinSpeedForFallDamage);
-                if (RecievesFallDamage && fallSpeedRatio > 0f)
-                {
-                    float dmgFromFall = Mathf.Lerp(FallDamageAtMinSpeed, FallDamageAtMaxSpeed, fallSpeedRatio);
-                    m_Health.TakeDamage(dmgFromFall, null);
-
-                    // fall damage SFX
-                    AudioSource.PlayOneShot(FallDamageSfx);
-                }
-                else
-                {
-                    // land SFX
-                    AudioSource.PlayOneShot(LandSfx);
-                }
+            {                
+                // land SFX
+                AudioSource.PlayOneShot(LandSfx);
+                
             }
 
             UpdateCharacterHeight(false);
