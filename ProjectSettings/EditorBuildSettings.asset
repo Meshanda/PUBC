@@ -24,15 +24,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 3e37c9c2fa251d846879dda14b12fdb1
   - enabled: 1
-    path: Assets/Scenes/Lobby_OLD.unity
-    guid: 5ec6a99690db497408dfd808ee78c4d9
-  - enabled: 1
     path: Assets/Scenes/Elvyn.unity
     guid: d65d3ef3ae1327f49828d61323760d00
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 91e6c56751c5cb34382c330ab86a2e8a
+  - enabled: 1
     path: Assets/Scenes/MyScene.unity
     guid: 4e79dd2c67e5da940bb4b2812d2322d8
-  - enabled: 1
-    path: Assets/Scenes/MainMenu.unity
-    guid: c07da76b1bab59d4fbf049ea3b0cfd0e
   m_configObjects: {}
