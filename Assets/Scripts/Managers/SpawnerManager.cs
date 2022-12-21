@@ -36,6 +36,22 @@ public class SpawnerManager : NetworkBehaviour
         NetworkManager.OnClientConnectedCallback += RespawnPlayer;
     }
 
+    public override void OnNetworkSpawn()
+    {
+        foreach (var client in NetworkManager.ConnectedClients)
+        {
+            ClientRpcParams clientRpcParams = new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { client.Key }
+                }
+            };
+
+            SetupHealthBarClientRpc(clientRpcParams);
+        }
+    }
+
     public void RespawnPlayer(ulong ownerId)
     {
         //Generate random x,z,y position on the terrain
