@@ -123,7 +123,6 @@ namespace Unity.FPS.Gameplay
         {
             if (!IsOwner)
                 return;
-            
             // Move
             transform.position += m_Velocity * Time.deltaTime;
             if (InheritWeaponVelocity)
@@ -243,7 +242,7 @@ namespace Unity.FPS.Gameplay
                 Damageable damageable = collider.GetComponent<Damageable>();
                 if (damageable)
                 {
-                    damageable.InflictDamageServerRpc(Damage, false, m_ProjectileBase.OwnerId);
+                    damageable.InflictDamageServerRpc(Damage, false, OwnerClientId);
                 }
             }
 

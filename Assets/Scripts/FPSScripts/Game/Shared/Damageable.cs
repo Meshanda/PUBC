@@ -28,7 +28,6 @@ namespace Unity.FPS.Game
         public void InflictDamageServerRpc(float damage, bool isExplosionDamage, ulong networkObjId)
         {
             GameObject damageSource = NetworkManager.ConnectedClients[networkObjId].PlayerObject.gameObject;
-            
             if (Health)
             {
                 var totalDamage = damage;

@@ -15,7 +15,7 @@ namespace Unity.FPS.Game
 
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
-        public UnityAction<UInt64,ulong> OnDie;
+        public UnityAction<ulong,ulong> OnDie;
 
         public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
         public NetworkVariable<bool> Invincible = new NetworkVariable<bool>();
@@ -48,6 +48,8 @@ namespace Unity.FPS.Game
 
         public void TakeDamage(float damage, GameObject damageSource)
         {
+            Debug.Log(damageSource.GetComponent<NetworkObject>().OwnerClientId);
+            Debug.Log(damageSource.gameObject.name);
             TakeDamageServerRpc(damage, damageSource.GetComponent<NetworkObject>().OwnerClientId);
         }
 
@@ -97,7 +99,7 @@ namespace Unity.FPS.Game
             if (CurrentHealth.Value <= 0f)
             {
                 m_IsDead = true;
-                OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId,OwnerClientId);
+                OnDie?.Invoke(killer.GetComponent<NetworkObject>().OwnerClientId,OwnerClientId);
                 Destroy(gameObject);
             }
         }
