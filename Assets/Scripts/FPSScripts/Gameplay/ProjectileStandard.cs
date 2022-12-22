@@ -162,44 +162,44 @@ namespace Unity.FPS.Gameplay
                 m_Velocity += Vector3.down * GravityDownAcceleration * Time.deltaTime;
             }
 
-            if (!IsOwner)
-                return;
-
             // Hit detection
+            DetectObstacle();
+
+            m_LastRootPosition = Root.position;
+        }
+
+        private void DetectObstacle()
+        {
+            RaycastHit closestHit = new RaycastHit();
+            closestHit.distance = Mathf.Infinity;
+            bool foundHit = false;
+
+            // Sphere cast
+            Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
+            RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
+                displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
+                k_TriggerInteraction);
+            foreach (var hit in hits)
             {
-                RaycastHit closestHit = new RaycastHit();
-                closestHit.distance = Mathf.Infinity;
-                bool foundHit = false;
-
-                // Sphere cast
-                Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
-                RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
-                    displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
-                    k_TriggerInteraction);
-                foreach (var hit in hits)
+                if (IsHitValid(hit) && hit.distance < closestHit.distance)
                 {
-                    if (IsHitValid(hit) && hit.distance < closestHit.distance)
-                    {
-                        foundHit = true;
-                        closestHit = hit;
-                    }
-                }
-
-                if (foundHit && _bAlreadyHit == false)
-                {
-                    // Handle case of casting while already inside a collider
-                    if (closestHit.distance <= 0f)
-                    {
-                        closestHit.point = Root.position;
-                        closestHit.normal = -transform.forward;
-                    }
-
-                    _bAlreadyHit = true;
-                    OnHit(closestHit.point, closestHit.normal, closestHit.collider);
+                    foundHit = true;
+                    closestHit = hit;
                 }
             }
 
-            m_LastRootPosition = Root.position;
+            if (foundHit && _bAlreadyHit == false)
+            {
+                // Handle case of casting while already inside a collider
+                if (closestHit.distance <= 0f)
+                {
+                    closestHit.point = Root.position;
+                    closestHit.normal = -transform.forward;
+                }
+
+                _bAlreadyHit = true;
+                OnHit(closestHit.point, closestHit.normal, closestHit.collider);
+            }
         }
         
 

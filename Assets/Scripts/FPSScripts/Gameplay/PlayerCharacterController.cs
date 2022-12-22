@@ -160,6 +160,8 @@ namespace Unity.FPS.Gameplay
         const float k_JumpGroundingPreventionTime = 0.2f;
         const float k_GroundCheckDistanceInAir = 0.07f;
 
+        [SerializeField] private List<Behaviour> _disabledOnOtherClient;
+
 
         public GameObject PlayerMesh;
 
@@ -176,7 +178,11 @@ namespace Unity.FPS.Gameplay
             {
                 ProjectUtils.SetLayerRecursively(PlayerMesh ,LayerMask.NameToLayer("OtherPlayer"));
                 gameObject.layer = LayerMask.NameToLayer("OtherPlayer");
-                Destroy(PlayerCamera);
+
+                foreach (Behaviour componentToDisable in _disabledOnOtherClient)
+                {
+                    componentToDisable.enabled = false;
+                }
                 return;
             }
             
