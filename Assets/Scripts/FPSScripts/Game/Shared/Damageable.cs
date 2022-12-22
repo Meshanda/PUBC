@@ -39,12 +39,6 @@ namespace Unity.FPS.Game
                     totalDamage *= DamageMultiplier;
                 }
 
-                // potentially reduce damages if inflicted by self
-                if (Health.gameObject == damageSource)
-                {
-                    totalDamage *= SensibilityToSelfdamage;
-                }
-
                 // apply the damages
                 Health.TakeDamage(totalDamage, damageSource);
             }
