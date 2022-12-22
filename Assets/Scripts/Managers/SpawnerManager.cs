@@ -60,6 +60,8 @@ public class SpawnerManager : NetworkBehaviour
     {
         RespawnPlayer(deadClientId);
         GameInstance.Instance.OnPlayerKill(killerId, deadClientId);
+
+        SoundOnKill.OnKill?.Invoke(killerId, deadClientId);
         KillFeedScript.OnKill?.Invoke(killerId, deadClientId);
     }
 
