@@ -27,7 +27,8 @@ namespace Unity.FPS.Game
 
         void Start()
         {
-            CurrentHealth.Value = MaxHealth;
+            if(IsServer || IsHost)
+                CurrentHealth.Value = MaxHealth;
         }
 
         public void Heal(float healAmount)
@@ -49,7 +50,7 @@ namespace Unity.FPS.Game
             TakeDamageServerRpc(damage, damageSource.GetComponent<NetworkObject>().OwnerClientId);
         }
 
-        [ServerRpc]
+        [ServerRpc (RequireOwnership = false)]
         public void TakeDamageServerRpc(float damage, ulong damageSourceClient)
         {
             if (Invincible.Value)

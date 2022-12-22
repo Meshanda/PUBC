@@ -500,14 +500,16 @@ namespace Unity.FPS.Game
             Vector3 shotDirection = GetShotDirectionWithinSpread(WeaponMuzzle);
             ProjectileBase newProjectile = Instantiate(ProjectilePrefab, WeaponMuzzle.position,
                 Quaternion.LookRotation(shotDirection));
-            
-            
-            newProjectile.Owner = Owner;
+
+            newProjectile.OwnerId = OwnerClientId;
             newProjectile.InheritedMuzzleVelocity = MuzzleWorldVelocity;
             newProjectile.InitialCharge = CurrentCharge;
                 
             newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
             newProjectile.ShootClientRpc();
+            
+            
+            OnShoot?.Invoke();
         }
 
         public Vector3 GetShotDirectionWithinSpread(Transform shootTransform)

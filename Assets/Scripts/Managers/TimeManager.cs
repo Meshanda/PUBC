@@ -7,6 +7,7 @@ using ScriptableObjects.Variables;
 public class TimeManager : NetworkBehaviour
 {
     [SerializeField] private FloatVariable _maxRoundTime;
+    [SerializeField] private FloatVariable _timeLeftGeneric;
     private NetworkVariable<float> _roundTimeLeft = new NetworkVariable<float>();
 
     public float GetTimeLeft()
@@ -21,11 +22,15 @@ public class TimeManager : NetworkBehaviour
     }
     private void Update()
     {
-        if (!IsServer) return;
-        _roundTimeLeft.Value -= Time.deltaTime;
-        if(_roundTimeLeft.Value <= 0)
+        if (IsServer)
         {
-            StartCoroutine(GameManager.instance.GameFinished(true));
+            _roundTimeLeft.Value -= Time.deltaTime;
+            if (_roundTimeLeft.Value <= 0)
+            {
+                StartCoroutine(GameManager.instance.GameFinished(true));
+            }
         }
+        _timeLeftGeneric.value = _roundTimeLeft.Value;
+
     }
 }

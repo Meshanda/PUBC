@@ -129,7 +129,7 @@ namespace Unity.FPS.Gameplay
         [SerializeField] private Animator _playerAnimator;
 
     #endregion
-
+    
     public float RotationMultiplier
         {
             get
@@ -160,8 +160,15 @@ namespace Unity.FPS.Gameplay
         const float k_JumpGroundingPreventionTime = 0.2f;
         const float k_GroundCheckDistanceInAir = 0.07f;
 
+        [SerializeField] private List<Behaviour> _disabledOnOtherClient;
+
+
+        public GameObject PlayerMesh;
+
         void Awake()
         {
+            Debug.Log(NetworkManager.LocalClientId);
+            
             ActorsManager actorsManager = FindObjectOfType<ActorsManager>();
             if (actorsManager != null)
                 actorsManager.SetPlayer(gameObject);
@@ -172,7 +179,12 @@ namespace Unity.FPS.Gameplay
             if (!IsOwner)
             {
                 ProjectUtils.SetLayerRecursively(PlayerMesh ,LayerMask.NameToLayer("OtherPlayer"));
-                Destroy(PlayerCamera);
+                gameObject.layer = LayerMask.NameToLayer("OtherPlayer");
+
+                foreach (Behaviour componentToDisable in _disabledOnOtherClient)
+                {
+                    componentToDisable.enabled = false;
+                }
                 return;
             }
             
@@ -203,9 +215,6 @@ namespace Unity.FPS.Gameplay
             SetCrouchingState(false, true);
             UpdateCharacterHeight(true);
         }
-
-
-        public GameObject PlayerMesh;
 
         void Update()
         {

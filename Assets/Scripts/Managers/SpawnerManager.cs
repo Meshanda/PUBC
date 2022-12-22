@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.FPS.Game;
-using Unity.FPS.Gameplay;
 using Unity.FPS.UI;
 using Unity.Netcode;
 using UnityEngine;
@@ -19,7 +18,6 @@ public class SpawnerManager : NetworkBehaviour
     private float xTerrainPos;
     private float zTerrainPos;
 
-
     private void Awake()
     {
         if(!IsServer && !IsHost) enabled = false;
@@ -36,27 +34,11 @@ public class SpawnerManager : NetworkBehaviour
             RespawnPlayer(client.Key);
         }
         NetworkManager.OnClientConnectedCallback += RespawnPlayer;
-
-    }
-
-    public override void OnNetworkSpawn()
-    {
-        foreach (var client in NetworkManager.ConnectedClients)
-        {
-            ClientRpcParams clientRpcParams = new ClientRpcParams
-            {
-                Send = new ClientRpcSendParams
-                {
-                    TargetClientIds = new ulong[] { client.Key }
-                }
-            };
-
-            SetupHealthBarClientRpc(clientRpcParams);
-        }
     }
 
     public void RespawnPlayer(ulong ownerId)
     {
+        
         //Generate random x,z,y position on the terrain
         float randX = Random.Range(xTerrainPos, xTerrainPos + terrainWidth);
         float randZ = Random.Range(zTerrainPos, zTerrainPos + terrainLength);
@@ -66,26 +48,18 @@ public class SpawnerManager : NetworkBehaviour
         yVal = yVal + yOffset;
 
         //Generate the Prefab on the generated position
-        GameObject playerGO = Instantiate(prefab, new Vector3(randX, yVal, randZ), Quaternion.identity);
+        GameObject playerGO = (GameObject)Instantiate(prefab, new Vector3(randX, yVal, randZ), Quaternion.identity);
 
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
 
-        ClientRpcParams clientRpcParams = new ClientRpcParams
-        {
-            Send = new ClientRpcSendParams
-            {
-                TargetClientIds = new ulong[] { ownerId }
-            }
-        };
-
-        SetupHealthBarClientRpc(clientRpcParams);
         StartCoroutine(InvincibilityOnRespawn(playerGO));
     }
 
     private void OnPlayerDied(ulong killerId, ulong deadClientId)
     {
         RespawnPlayer(deadClientId);
+        GameInstance.Instance.OnPlayerKill(killerId, deadClientId);
     }
 
     private IEnumerator InvincibilityOnRespawn(GameObject playerGO)
@@ -96,11 +70,5 @@ public class SpawnerManager : NetworkBehaviour
         yield return new WaitForSeconds(respawnInvincibilityTime);
 
         playerHealth.Invincible.Value = false;
-    }
-
-    [ClientRpc]
-    private void SetupHealthBarClientRpc(ClientRpcParams clientRpcParams = default)
-    {
-        PlayerHealthBar.instance.SetupHealthBar(NetworkManager.LocalClient.PlayerObject.gameObject);
     }
 }

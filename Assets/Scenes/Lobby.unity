@@ -3054,6 +3054,8 @@ MonoBehaviour:
   - {fileID: 1010588947}
   - {fileID: 519959538}
   - {fileID: 17537527}
+  _playerUsernameList: {fileID: 11400000, guid: 933bd6f4d40e84e4f82b91e4f2995035,
+    type: 2}
 --- !u!1001 &692766149
 PrefabInstance:
   m_ObjectHideFlags: 0

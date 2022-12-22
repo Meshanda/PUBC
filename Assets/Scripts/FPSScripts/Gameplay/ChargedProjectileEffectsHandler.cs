@@ -1,4 +1,5 @@
 ﻿using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.FPS.Gameplay
@@ -23,7 +24,7 @@ namespace Unity.FPS.Gameplay
             DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ChargedProjectileEffectsHandler>(
                 m_ProjectileBase, this, gameObject);
 
-            m_ProjectileBase.OnShoot += OnShoot;
+            m_ProjectileBase.OnShoot += OnShootCPEH;
 
             m_AffectedRenderers = ChargingObject.GetComponentsInChildren<MeshRenderer>();
             foreach (var ren in m_AffectedRenderers)
@@ -32,7 +33,7 @@ namespace Unity.FPS.Gameplay
             }
         }
 
-        void OnShoot()
+        void OnShootCPEH()
         {
             ChargingObject.transform.localScale = Scale.GetValueFromRatio(m_ProjectileBase.InitialCharge);
 

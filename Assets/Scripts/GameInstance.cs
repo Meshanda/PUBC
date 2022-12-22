@@ -7,20 +7,39 @@ using UnityEngine.Events;
 
 public class GameInstance : NetworkBehaviour
 {
-    public static GameInstance instance;
+    [SerializeField] private PlayerUsernameList _usernameList;
+    [SerializeField] private ScoreboardSO _scoreboard;
+    public static GameInstance Instance;
     public NetworkList<PlayerKillAmount> playersKills;
 
     private void Awake()
     {
-        playersKills = new NetworkList<PlayerKillAmount>();
-    }
-    private void Start()
-    {
-        if (instance == null) 
-            instance = this;
+        if (Instance == null) 
+            Instance = this;
         else
             Destroy(this);
+        
+        playersKills = new NetworkList<PlayerKillAmount>();
+
+        playersKills.OnListChanged += OnListChanged;
     }
+
+    private void OnListChanged(NetworkListEvent<PlayerKillAmount> changeevent)
+    {
+        _scoreboard.players.Clear();
+
+        foreach (var player in playersKills)
+        {
+            var scoreboardPlayer = new ScoreboardPlayer
+            {
+                playerName = _usernameList.GetNameViaId(player.clientId),
+                numberOfKills = player.killsAmount
+            };
+
+            _scoreboard.players.Add(scoreboardPlayer);
+        }
+    }
+
     public override void OnNetworkSpawn()
     {
         if(IsServer || IsHost)
@@ -40,6 +59,14 @@ public class GameInstance : NetworkBehaviour
     {
         PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
         playerKills.killsAmount += killAmountToAdd;
+        Debug.Log(playerKills.killsAmount);
+        ReplacePlayerKillAmount(clientID, playerKills);
+    }
+    public void RemoveKill(ulong clientID, int killAmountToRemove = 1)
+    {
+        PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
+        playerKills.killsAmount -= killAmountToRemove;
+        Debug.Log(playerKills.killsAmount);
         ReplacePlayerKillAmount(clientID, playerKills);
     }
     public void AddKill(NetworkClient client, int killAmountToAdd = 1)
@@ -57,7 +84,7 @@ public class GameInstance : NetworkBehaviour
         newPlayerKillAmount.killsAmount = 0;
         playersKills.Add(newPlayerKillAmount);
 
-        NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKill;
+        //NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKill;
     }
     private void RemovePlayer(ulong clientId)
     {
@@ -86,7 +113,10 @@ public class GameInstance : NetworkBehaviour
     }
     public void OnPlayerKill(ulong killerClientId, ulong deadClientId)
     {
-        AddKill(killerClientId);
+        if (killerClientId != deadClientId)
+            AddKill(killerClientId);
+        else
+            RemoveKill(killerClientId);
     }
     public void OnGameRestart()
     {

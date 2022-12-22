@@ -1,9 +1,10 @@
 ﻿using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.FPS.Gameplay
 {
-    public class ProjectileChargeParameters : MonoBehaviour
+    public class ProjectileChargeParameters : NetworkBehaviour
     {
         public MinMaxFloat Damage;
         public MinMaxFloat Radius;
@@ -19,11 +20,14 @@ namespace Unity.FPS.Gameplay
             DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ProjectileChargeParameters>(m_ProjectileBase,
                 this, gameObject);
 
-            m_ProjectileBase.OnShoot += OnShoot;
+            m_ProjectileBase.OnShoot += OnShootPCP;
         }
 
-        void OnShoot()
+        void OnShootPCP()
         {
+            if (!IsOwner)
+                return;
+            
             // Apply the parameters based on projectile charge
             ProjectileStandard proj = GetComponent<ProjectileStandard>();
             if (proj)
