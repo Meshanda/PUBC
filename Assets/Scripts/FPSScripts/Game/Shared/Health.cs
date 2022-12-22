@@ -50,7 +50,7 @@ namespace Unity.FPS.Game
             TakeDamageServerRpc(damage, damageSource.GetComponent<NetworkObject>().OwnerClientId);
         }
 
-        [ServerRpc]
+        [ServerRpc (RequireOwnership = false)]
         public void TakeDamageServerRpc(float damage, ulong damageSourceClient)
         {
             if (Invincible.Value)

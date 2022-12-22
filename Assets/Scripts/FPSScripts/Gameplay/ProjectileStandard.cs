@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.FPS.Game;
+using Unity.Netcode;
 using UnityEngine;
 
 namespace Unity.FPS.Gameplay
@@ -66,19 +68,24 @@ namespace Unity.FPS.Gameplay
 
         const QueryTriggerInteraction k_TriggerInteraction = QueryTriggerInteraction.Collide;
 
+        private bool _bAlreadyHit;
+
         void OnEnable()
         {
             m_ProjectileBase = GetComponent<ProjectileBase>();
             DebugUtility.HandleErrorIfNullGetComponent<ProjectileBase, ProjectileStandard>(m_ProjectileBase, this,
                 gameObject);
 
-            m_ProjectileBase.OnShoot += OnShoot;
+            m_ProjectileBase.OnShoot += OnShootPS;
 
             Destroy(gameObject, MaxLifeTime);
         }
 
-        new void OnShoot()
+        new void OnShootPS()
         {
+            if (!IsOwner)
+                return;
+            
             m_ShootTime = Time.time;
             m_LastRootPosition = Root.position;
             m_Velocity = transform.forward * Speed;
@@ -109,20 +116,14 @@ namespace Unity.FPS.Gameplay
                 {
                     m_HasTrajectoryOverride = false;
                 }
-
-                if (Physics.Raycast(playerWeaponsManager.WeaponCamera.transform.position, cameraToMuzzle.normalized,
-                    out RaycastHit hit, cameraToMuzzle.magnitude, HittableLayers, k_TriggerInteraction))
-                {
-                    if (IsHitValid(hit))
-                    {
-                        OnHit(hit.point, hit.normal, hit.collider);
-                    }
-                }
             }
         }
 
         void Update()
         {
+            if (!IsOwner)
+                return;
+            
             // Move
             transform.position += m_Velocity * Time.deltaTime;
             if (InheritWeaponVelocity)
@@ -162,40 +163,45 @@ namespace Unity.FPS.Gameplay
             }
 
             // Hit detection
-            {
-                RaycastHit closestHit = new RaycastHit();
-                closestHit.distance = Mathf.Infinity;
-                bool foundHit = false;
-
-                // Sphere cast
-                Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
-                RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
-                    displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
-                    k_TriggerInteraction);
-                foreach (var hit in hits)
-                {
-                    if (IsHitValid(hit) && hit.distance < closestHit.distance)
-                    {
-                        foundHit = true;
-                        closestHit = hit;
-                    }
-                }
-
-                if (foundHit)
-                {
-                    // Handle case of casting while already inside a collider
-                    if (closestHit.distance <= 0f)
-                    {
-                        closestHit.point = Root.position;
-                        closestHit.normal = -transform.forward;
-                    }
-
-                    OnHit(closestHit.point, closestHit.normal, closestHit.collider);
-                }
-            }
+            DetectObstacle();
 
             m_LastRootPosition = Root.position;
         }
+
+        private void DetectObstacle()
+        {
+            RaycastHit closestHit = new RaycastHit();
+            closestHit.distance = Mathf.Infinity;
+            bool foundHit = false;
+
+            // Sphere cast
+            Vector3 displacementSinceLastFrame = Tip.position - m_LastRootPosition;
+            RaycastHit[] hits = Physics.SphereCastAll(m_LastRootPosition, Radius,
+                displacementSinceLastFrame.normalized, displacementSinceLastFrame.magnitude, HittableLayers,
+                k_TriggerInteraction);
+            foreach (var hit in hits)
+            {
+                if (IsHitValid(hit) && hit.distance < closestHit.distance)
+                {
+                    foundHit = true;
+                    closestHit = hit;
+                }
+            }
+
+            if (foundHit && _bAlreadyHit == false)
+            {
+                // Handle case of casting while already inside a collider
+                if (closestHit.distance <= 0f)
+                {
+                    closestHit.point = Root.position;
+                    closestHit.normal = -transform.forward;
+                }
+
+                _bAlreadyHit = true;
+                OnHit(closestHit.point, closestHit.normal, closestHit.collider);
+            }
+        }
+        
 
         bool IsHitValid(RaycastHit hit)
         {
@@ -220,6 +226,7 @@ namespace Unity.FPS.Gameplay
             return true;
         }
 
+        
         void OnHit(Vector3 point, Vector3 normal, Collider collider)
         {
             // damage
@@ -228,6 +235,7 @@ namespace Unity.FPS.Gameplay
                 // area damage
                 AreaOfDamage.InflictDamageInArea(Damage, point, HittableLayers, k_TriggerInteraction,
                     m_ProjectileBase.Owner);
+                
             }
             else
             {
@@ -235,7 +243,7 @@ namespace Unity.FPS.Gameplay
                 Damageable damageable = collider.GetComponent<Damageable>();
                 if (damageable)
                 {
-                    damageable.InflictDamage(Damage, false, m_ProjectileBase.Owner);
+                    damageable.InflictDamageServerRpc(Damage, false, m_ProjectileBase.OwnerId);
                 }
             }
 
@@ -256,8 +264,7 @@ namespace Unity.FPS.Gameplay
                 AudioUtility.CreateSFX(ImpactSfxClip, point, AudioUtility.AudioGroups.Impact, 1f, 3f);
             }
 
-            // Self Destruct
-            Destroy(this.gameObject);
+            TryDestroying();
         }
 
         void OnDrawGizmosSelected()
