@@ -34,7 +34,11 @@ public class PowerUpManager : NetworkBehaviour
     
     private void Start()
     {
-        StartCoroutine(SpawnPowerUps());
+        if (IsServer)
+        {
+            StartCoroutine(SpawnPowerUps());
+        }
+        
     }
 
     private IEnumerator SpawnPowerUps()
