@@ -47,10 +47,12 @@ namespace Unity.FPS.UI
 
         PlayerWeaponsManager m_PlayerWeaponsManager;
         WeaponController m_Weapon;
+        private WeaponHUDManager m_WeaponHUDManager;
 
         void Awake()
         {
             EventManager.AddListener<AmmoPickupEvent>(OnAmmoPickup);
+            m_WeaponHUDManager = GetComponentInParent<WeaponHUDManager>();
         }
 
         void OnAmmoPickup(AmmoPickupEvent evt)
@@ -82,6 +84,16 @@ namespace Unity.FPS.UI
 
         void Update()
         {
+            if(m_WeaponHUDManager.localPlayerCoroutine == null && m_PlayerWeaponsManager == null)
+            {
+                StartCoroutine(m_WeaponHUDManager.GetLocalPlayer());
+                return;
+            }
+            else if (m_PlayerWeaponsManager == null)
+            {
+                return;
+            }
+
             float currenFillRatio = m_Weapon.CurrentAmmoRatio;
             AmmoFillImage.fillAmount = Mathf.Lerp(AmmoFillImage.fillAmount, currenFillRatio,
                 Time.deltaTime * AmmoFillMovementSharpness);
