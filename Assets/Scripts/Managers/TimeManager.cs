@@ -25,9 +25,9 @@ public class TimeManager : NetworkBehaviour
         if (IsServer)
         {
             _roundTimeLeft.Value -= Time.deltaTime;
-            if (_roundTimeLeft.Value <= 0)
+            if (_roundTimeLeft.Value <= 0 && !GameManager.Instance.GameEnded)
             {
-                StartCoroutine(GameManager.instance.GameFinished(true));
+                StartCoroutine(GameManager.Instance.GameFinished(true));
             }
         }
         _timeLeftGeneric.value = _roundTimeLeft.Value;
