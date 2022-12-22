@@ -21,6 +21,12 @@ namespace Unity.FPS.Gameplay
         [Tooltip("The weapon the player will start with")]
         public WeaponController StartingWeapon;
 
+        public WeaponController Weapon
+        {
+            get => StartingWeapon;
+            set => StartingWeapon = value;
+        }
+
         [Header("References")] [Tooltip("Secondary camera used to avoid seeing weapon go throw geometries")]
         public Camera WeaponCamera;
 
