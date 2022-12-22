@@ -84,7 +84,7 @@ public class GameInstance : NetworkBehaviour
         newPlayerKillAmount.killsAmount = 0;
         playersKills.Add(newPlayerKillAmount);
 
-        NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKill;
+        //NetworkManager.ConnectedClients[clientId].PlayerObject.GetComponent<Health>().OnDie += OnPlayerKill;
     }
     private void RemovePlayer(ulong clientId)
     {

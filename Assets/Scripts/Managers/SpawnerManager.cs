@@ -52,7 +52,6 @@ public class SpawnerManager : NetworkBehaviour
 
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
-        playerGO.GetComponent<Health>().OnDie += GameInstance.Instance.OnPlayerKill;
 
         StartCoroutine(InvincibilityOnRespawn(playerGO));
     }
@@ -60,6 +59,7 @@ public class SpawnerManager : NetworkBehaviour
     private void OnPlayerDied(ulong killerId, ulong deadClientId)
     {
         RespawnPlayer(deadClientId);
+        GameInstance.Instance.OnPlayerKill(killerId, deadClientId);
     }
 
     private IEnumerator InvincibilityOnRespawn(GameObject playerGO)
