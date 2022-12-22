@@ -27,7 +27,8 @@ namespace Unity.FPS.Game
 
         void Start()
         {
-            CurrentHealth.Value = MaxHealth;
+            if(IsServer || IsHost)
+                CurrentHealth.Value = MaxHealth;
         }
 
         public void Heal(float healAmount)
