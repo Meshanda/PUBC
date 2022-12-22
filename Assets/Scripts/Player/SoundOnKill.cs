@@ -26,7 +26,6 @@ public class SoundOnKill : MonoBehaviour
         OnKill -= OnKillSound;
     }
 
-    [ClientRpc]
     private void OnKillSound(ulong killerId, ulong deadId)
     {
         AudioClip clip = sounds[UnityEngine.Random.Range(0, sounds.Length)];
