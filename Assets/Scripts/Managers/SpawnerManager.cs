@@ -60,6 +60,7 @@ public class SpawnerManager : NetworkBehaviour
     {
         RespawnPlayer(deadClientId);
         GameInstance.Instance.OnPlayerKill(killerId, deadClientId);
+        KillFeedScript.OnKill?.Invoke(killerId, deadClientId);
     }
 
     private IEnumerator InvincibilityOnRespawn(GameObject playerGO)

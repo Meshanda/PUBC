@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using Network;
+using ScriptableObjects.Variables;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -19,7 +21,15 @@ public class LobbyUI : MonoBehaviour
     [Header("Ready Button")]
     [SerializeField] private Button _readyButton;
     [SerializeField] private TextMeshProUGUI _readyText;
-    
+
+    [Space(10)] 
+    [Header("Game Settings")] 
+    [SerializeField] private GameObject _paramParent;
+    [SerializeField] private TMP_InputField _killText;
+    [SerializeField] private IntVariable _killSo;
+    [SerializeField] private TMP_InputField _timeText;
+    [SerializeField] private FloatVariable _timeSo;
+
     [Space(10)]
     [Header("Map Selection")]
     [SerializeField] private Button _mapLeftButton;
@@ -84,9 +94,22 @@ public class LobbyUI : MonoBehaviour
         {
             _mapLeftButton.gameObject.SetActive(false);
             _mapRightButton.gameObject.SetActive(false);
+            
+        }
+        else
+        {
+            _paramParent.SetActive(true);
+            _killText.text = _killSo.value.ToString();
+            _timeText.text = _timeSo.value + "s";
         }
     }
-    
+
+    private void Update()
+    {
+        _killSo.value = Int32.Parse(_killText.text);
+        _timeSo.value = Int32.Parse(_timeText.text);
+    }
+
     private async void OnSkinRightButtonClicked()
     {
         var skinIndex = GameLobbyManager.Instance.GetLocalSkinIndex();
