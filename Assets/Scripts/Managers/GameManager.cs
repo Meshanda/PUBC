@@ -24,7 +24,7 @@ public class GameManager : NetworkBehaviour
     }
     public override void OnNetworkSpawn()
     {
-        GameInstance.instance.playersKills.OnListChanged += OnPlayersKillsChanged;
+        GameInstance.Instance.playersKills.OnListChanged += OnPlayersKillsChanged;
     }
 
     private void OnPlayersKillsChanged(NetworkListEvent<PlayerKillAmount> changedPlayersKills)

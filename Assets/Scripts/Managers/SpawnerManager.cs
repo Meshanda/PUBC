@@ -38,6 +38,7 @@ public class SpawnerManager : NetworkBehaviour
 
     public void RespawnPlayer(ulong ownerId)
     {
+        
         //Generate random x,z,y position on the terrain
         float randX = Random.Range(xTerrainPos, xTerrainPos + terrainWidth);
         float randZ = Random.Range(zTerrainPos, zTerrainPos + terrainLength);
@@ -51,6 +52,7 @@ public class SpawnerManager : NetworkBehaviour
 
         playerGO.GetComponent<NetworkObject>().SpawnAsPlayerObject(ownerId);
         playerGO.GetComponent<Health>().OnDie += OnPlayerDied;
+        playerGO.GetComponent<Health>().OnDie += GameInstance.Instance.OnPlayerKill;
 
         StartCoroutine(InvincibilityOnRespawn(playerGO));
     }

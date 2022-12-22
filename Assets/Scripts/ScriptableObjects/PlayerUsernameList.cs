@@ -6,6 +6,11 @@ using UnityEngine;
 public class PlayerUsernameList : ScriptableObject
 {
     public List<PlayerName> playersNames = new List<PlayerName>();
+
+    public string GetNameViaId(ulong id)
+    {
+        return playersNames.Find((pn) => pn.clientId == id).username;
+    }
 }
 
 [System.Serializable]

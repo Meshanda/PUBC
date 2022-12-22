@@ -129,7 +129,7 @@ namespace Unity.FPS.Gameplay
         [SerializeField] private Animator _playerAnimator;
 
     #endregion
-
+    
     public float RotationMultiplier
         {
             get
@@ -167,6 +167,8 @@ namespace Unity.FPS.Gameplay
 
         void Awake()
         {
+            Debug.Log(NetworkManager.LocalClientId);
+            
             ActorsManager actorsManager = FindObjectOfType<ActorsManager>();
             if (actorsManager != null)
                 actorsManager.SetPlayer(gameObject);
