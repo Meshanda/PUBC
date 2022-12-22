@@ -8,6 +8,7 @@ using UnityEngine;
 public class ScoreboardScript : MonoBehaviour
 {
     [SerializeField] private GameObject _rowPfb;
+    [SerializeField] private Transform _parent;
     [SerializeField] private Transform _panelParent;
     [SerializeField] private ScoreboardSO _scoreboardData;
 
@@ -25,11 +26,11 @@ public class ScoreboardScript : MonoBehaviour
         
         if (!Input.GetKey(KeyCode.Tab))
         {
-            _panelParent.gameObject.SetActive(false);
+            _parent.gameObject.SetActive(false);
             return;
         }
         
-        _panelParent.gameObject.SetActive(true);
+        _parent.gameObject.SetActive(true);
         ClearScoreboard();
         FillScoreboard();
     }
