@@ -7,14 +7,15 @@ namespace Unity.FPS.Game
 {
     public class Health : NetworkBehaviour
     {
-        [Tooltip("Maximum amount of health")] public float MaxHealth = 10f;
+        [Tooltip("Maximum amount of health")] 
+        public float MaxHealth = 10f;
 
         [Tooltip("Health ratio at which the critical health vignette starts appearing")]
         public float CriticalHealthRatio = 0.3f;
 
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
-        public UnityAction<UInt64,ulong> OnDie;
+        public UnityAction<ulong,ulong> OnDie;
 
         public NetworkVariable<float> CurrentHealth = new NetworkVariable<float>();
         public NetworkVariable<bool> Invincible = new NetworkVariable<bool>();
@@ -47,6 +48,8 @@ namespace Unity.FPS.Game
 
         public void TakeDamage(float damage, GameObject damageSource)
         {
+            Debug.Log(damageSource.GetComponent<NetworkObject>().OwnerClientId);
+            Debug.Log(damageSource.gameObject.name);
             TakeDamageServerRpc(damage, damageSource.GetComponent<NetworkObject>().OwnerClientId);
         }
 
@@ -96,7 +99,7 @@ namespace Unity.FPS.Game
             if (CurrentHealth.Value <= 0f)
             {
                 m_IsDead = true;
-                OnDie?.Invoke((UInt64)killer.GetComponent<NetworkObject>()?.OwnerClientId,OwnerClientId);
+                OnDie?.Invoke(killer.GetComponent<NetworkObject>().OwnerClientId,OwnerClientId);
                 Destroy(gameObject);
             }
         }

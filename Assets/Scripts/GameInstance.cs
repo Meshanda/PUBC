@@ -59,14 +59,12 @@ public class GameInstance : NetworkBehaviour
     {
         PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
         playerKills.killsAmount += killAmountToAdd;
-        Debug.Log(playerKills.killsAmount);
         ReplacePlayerKillAmount(clientID, playerKills);
     }
     public void RemoveKill(ulong clientID, int killAmountToRemove = 1)
     {
         PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
         playerKills.killsAmount -= killAmountToRemove;
-        Debug.Log(playerKills.killsAmount);
         ReplacePlayerKillAmount(clientID, playerKills);
     }
     public void AddKill(NetworkClient client, int killAmountToAdd = 1)

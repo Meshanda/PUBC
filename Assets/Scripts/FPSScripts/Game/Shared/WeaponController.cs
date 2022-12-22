@@ -60,7 +60,7 @@ namespace Unity.FPS.Game
         public float BulletSpreadAngle = 0f;
 
         [Tooltip("Amount of bullets per shot")]
-        public int BulletsPerShot = 1;
+        public NetworkVariable<int> BulletsPerShot = new NetworkVariable<int>(1);
 
         [Tooltip("Force that will push back the weapon after each shot")] [Range(0f, 2f)]
         public float RecoilForce = 1;
@@ -151,7 +151,7 @@ namespace Unity.FPS.Game
 
         public float GetAmmoNeededToShoot() =>
             (ShootType != WeaponShootType.Charge ? 1f : Mathf.Max(1f, AmmoUsedOnStartCharge)) /
-            (MaxAmmo * BulletsPerShot);
+            (MaxAmmo * BulletsPerShot.Value);
 
         public int GetCarriedPhysicalBullets() => m_CarriedPhysicalBullets;
         public int GetCurrentAmmo() => Mathf.FloorToInt(m_CurrentAmmo);
@@ -409,7 +409,7 @@ namespace Unity.FPS.Game
         {
             if (!IsCharging
                 && m_CurrentAmmo >= AmmoUsedOnStartCharge
-                && Mathf.FloorToInt((m_CurrentAmmo - AmmoUsedOnStartCharge) * BulletsPerShot) > 0
+                && Mathf.FloorToInt((m_CurrentAmmo - AmmoUsedOnStartCharge) * BulletsPerShot.Value) > 0
                 && m_LastTimeShot + DelayBetweenShots < Time.time)
             {
                 UseAmmo(AmmoUsedOnStartCharge);
@@ -447,8 +447,8 @@ namespace Unity.FPS.Game
                 return;
             
             int bulletsPerShotFinal = ShootType == WeaponShootType.Charge
-                ? Mathf.CeilToInt(CurrentCharge * BulletsPerShot)
-                : BulletsPerShot;
+                ? Mathf.CeilToInt(CurrentCharge * BulletsPerShot.Value)
+                : BulletsPerShot.Value;
 
             // spawn all bullets with random direction
             for (int i = 0; i < bulletsPerShotFinal; i++)
@@ -504,8 +504,8 @@ namespace Unity.FPS.Game
             newProjectile.OwnerId = OwnerClientId;
             newProjectile.InheritedMuzzleVelocity = MuzzleWorldVelocity;
             newProjectile.InitialCharge = CurrentCharge;
-                
-            newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+
+            newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(GetComponentInParent<NetworkObject>().OwnerClientId, true);
             newProjectile.ShootClientRpc();
             
             

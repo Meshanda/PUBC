@@ -697,6 +697,7 @@ GameObject:
   - component: {fileID: 5767440961617457172}
   - component: {fileID: 8521729449011230578}
   - component: {fileID: 3855909087157892138}
+  - component: {fileID: 1431908914122071282}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -823,6 +824,32 @@ MonoBehaviour:
   blendDistance: 0
   weight: 1
   sharedProfile: {fileID: 11400000, guid: df837a1f5737d5a489993708ca80ccc9, type: 2}
+--- !u!114 &1431908914122071282
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3981184571079263293}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4818cfb9f7b676348acad4ef0b5b7413, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
+  SyncRotAngleX: 1
+  SyncRotAngleY: 1
+  SyncRotAngleZ: 1
+  SyncScaleX: 0
+  SyncScaleY: 0
+  SyncScaleZ: 0
+  PositionThreshold: 0.001
+  RotAngleThreshold: 0.01
+  ScaleThreshold: 0.01
+  InLocalSpace: 0
+  Interpolate: 1
 --- !u!1 &5099712541551675393
 GameObject:
   m_ObjectHideFlags: 0
@@ -1060,6 +1087,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Weapon_Blaster
+      objectReference: {fileID: 0}
+    - target: {fileID: 4047150106389574432, guid: b318fabc73446b746a1005cede0c4ceb,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8522328072345465258, guid: b318fabc73446b746a1005cede0c4ceb,
         type: 3}
