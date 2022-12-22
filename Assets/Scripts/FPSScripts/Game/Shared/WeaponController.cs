@@ -504,8 +504,8 @@ namespace Unity.FPS.Game
             newProjectile.OwnerId = OwnerClientId;
             newProjectile.InheritedMuzzleVelocity = MuzzleWorldVelocity;
             newProjectile.InitialCharge = CurrentCharge;
-                
-            newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(OwnerClientId, true);
+
+            newProjectile.GetComponent<NetworkObject>().SpawnWithOwnership(GetComponentInParent<NetworkObject>().OwnerClientId, true);
             newProjectile.ShootClientRpc();
             
             

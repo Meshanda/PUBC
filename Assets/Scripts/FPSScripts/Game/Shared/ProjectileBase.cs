@@ -11,7 +11,7 @@ namespace Unity.FPS.Game
         {
             get
             {
-                NetworkObject OwnerReturn = NetworkManager.ConnectedClients[OwnerId].PlayerObject;
+                NetworkObject OwnerReturn = NetworkManager.LocalClient.PlayerObject;
                 return OwnerReturn.gameObject;
             }
         }
