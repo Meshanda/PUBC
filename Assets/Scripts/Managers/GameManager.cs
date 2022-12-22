@@ -4,12 +4,13 @@ using UnityEngine;
 using Unity.Netcode;
 using ScriptableObjects.Variables;
 using UnityEngine.Events;
+using System;
 
 public class GameManager : NetworkBehaviour
 {
     public static GameManager instance;
-    public UnityAction OnGameEnd;
-    public UnityAction OnGameRestart;
+    public Action OnGameEnd;
+    public Action OnGameRestart;
     [SerializeField]private IntVariable _maxWinKill;
 
     private void Awake()
@@ -38,7 +39,7 @@ public class GameManager : NetworkBehaviour
 
     public IEnumerator GameFinished(bool byTime = false)
     {
-        OnGameEnd.Invoke();
+        OnGameEnd?.Invoke();
         if (byTime)
             Debug.Log("Game finished by time");
         else
@@ -51,6 +52,6 @@ public class GameManager : NetworkBehaviour
 
     private void RestartGame()
     {
-        OnGameRestart.Invoke();
+        OnGameRestart?.Invoke();
     }
 }
