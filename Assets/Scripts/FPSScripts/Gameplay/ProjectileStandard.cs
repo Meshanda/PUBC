@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Unity.FPS.Game;
 using Unity.Netcode;
@@ -78,7 +79,14 @@ namespace Unity.FPS.Gameplay
 
             m_ProjectileBase.OnShoot += OnShootPS;
 
-            Destroy(gameObject, MaxLifeTime);
+            StartCoroutine(DestroyAfterTime());
+        }
+        
+        
+        public IEnumerator DestroyAfterTime()
+        {
+            yield return new WaitForSeconds(MaxLifeTime);
+            TryDestroying();
         }
 
         new void OnShootPS()
