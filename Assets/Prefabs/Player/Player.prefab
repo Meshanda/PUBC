@@ -163,7 +163,6 @@ GameObject:
   - component: {fileID: 4822137795992121624}
   - component: {fileID: 6066149473559166268}
   - component: {fileID: 6545234607638555364}
-  - component: {fileID: 8602258124542932868}
   - component: {fileID: 8889134210353693140}
   - component: {fileID: 501098901640861871}
   - component: {fileID: 7660955990012484376}
@@ -341,20 +340,6 @@ MonoBehaviour:
   RefillDurationInTheAir: 5
   RefillDelay: 1
   JetpackSfx: {fileID: 8300000, guid: 01a15bd1861d7914abbedc36aad1f4d6, type: 3}
---- !u!136 &8602258124542932868
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3792386886754171834}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 0
-  m_Radius: 0.471544
-  m_Height: 1.8
-  m_Direction: 1
-  m_Center: {x: 0.056911975, y: 0.91463196, z: 0}
 --- !u!143 &8889134210353693140
 CharacterController:
   m_ObjectHideFlags: 0
@@ -1081,7 +1066,8 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 951099334
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8522328072345465258, guid: b318fabc73446b746a1005cede0c4ceb, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: b318fabc73446b746a1005cede0c4ceb, type: 3}
 --- !u!4 &1166037526220608899 stripped
 Transform:

@@ -117,7 +117,7 @@ MonoBehaviour:
   TrajectoryCorrectionDistance: -1
   InheritWeaponVelocity: 0
   Damage: 40
-  AreaOfDamage: {fileID: 2878229466166327128}
+  AreaOfDamage: {fileID: 0}
   RadiusColor: {r: 0, g: 1, b: 1, a: 0.49803922}
 --- !u!114 &2878229466166327128
 MonoBehaviour:

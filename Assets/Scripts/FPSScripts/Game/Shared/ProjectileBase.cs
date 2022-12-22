@@ -7,7 +7,16 @@ namespace Unity.FPS.Game
 {
     public abstract class ProjectileBase : NetworkBehaviour
     {
-        public GameObject Owner { get; set; }
+        public GameObject Owner
+        {
+            get
+            {
+                NetworkObject OwnerReturn = NetworkManager.ConnectedClients[OwnerId].PlayerObject;
+                return OwnerReturn.gameObject;
+            }
+        }
+
+        public ulong OwnerId { get; set; }
         public Vector3 InitialPosition { get; private set; }
         public Vector3 InitialDirection { get; private set; }
         public Vector3 InheritedMuzzleVelocity { get; set; }

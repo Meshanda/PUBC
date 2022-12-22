@@ -226,6 +226,7 @@ namespace Unity.FPS.Gameplay
             return true;
         }
 
+        
         void OnHit(Vector3 point, Vector3 normal, Collider collider)
         {
             // damage
@@ -234,6 +235,7 @@ namespace Unity.FPS.Gameplay
                 // area damage
                 AreaOfDamage.InflictDamageInArea(Damage, point, HittableLayers, k_TriggerInteraction,
                     m_ProjectileBase.Owner);
+                
             }
             else
             {
@@ -241,7 +243,7 @@ namespace Unity.FPS.Gameplay
                 Damageable damageable = collider.GetComponent<Damageable>();
                 if (damageable)
                 {
-                    damageable.InflictDamage(Damage, false, m_ProjectileBase.Owner);
+                    damageable.InflictDamageServerRpc(Damage, false, m_ProjectileBase.OwnerId);
                 }
             }
 
