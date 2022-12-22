@@ -2,10 +2,12 @@
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
 using UnityEngine;
+using Unity.Netcode;
+using System.Collections;
 
 namespace Unity.FPS.UI
 {
-    public class WeaponHUDManager : MonoBehaviour
+    public class WeaponHUDManager : NetworkBehaviour
     {
         [Tooltip("UI panel containing the layoutGroup for displaying weapon ammo")]
         public RectTransform AmmoPanel;
@@ -16,12 +18,21 @@ namespace Unity.FPS.UI
         PlayerWeaponsManager m_PlayerWeaponsManager;
         List<AmmoCounter> m_AmmoCounters = new List<AmmoCounter>();
 
-        void Start()
-        {
-            m_PlayerWeaponsManager = FindObjectOfType<PlayerWeaponsManager>();
-            DebugUtility.HandleErrorIfNullFindObject<PlayerWeaponsManager, WeaponHUDManager>(m_PlayerWeaponsManager,
-                this);
+        private NetworkClient _localClient;
+        private NetworkObject _localPlayer;
+        GameObject _ammoCounterInstance;
+        
+        public Coroutine localPlayerCoroutine;
 
+        public override void OnNetworkSpawn()
+        {
+            _localClient = NetworkManager.LocalClient;
+            StartCoroutine(GetLocalPlayer());
+            _ammoCounterInstance = Instantiate(AmmoCounterPrefab, AmmoPanel);
+        }
+
+        private void SetupWeapon()
+        {
             WeaponController activeWeapon = m_PlayerWeaponsManager.GetActiveWeapon();
             if (activeWeapon)
             {
@@ -36,10 +47,7 @@ namespace Unity.FPS.UI
 
         void AddWeapon(WeaponController newWeapon, int weaponIndex)
         {
-            GameObject ammoCounterInstance = Instantiate(AmmoCounterPrefab, AmmoPanel);
-            AmmoCounter newAmmoCounter = ammoCounterInstance.GetComponent<AmmoCounter>();
-            DebugUtility.HandleErrorIfNullGetComponent<AmmoCounter, WeaponHUDManager>(newAmmoCounter, this,
-                ammoCounterInstance.gameObject);
+            AmmoCounter newAmmoCounter = _ammoCounterInstance.GetComponent<AmmoCounter>();
 
             newAmmoCounter.Initialize(newWeapon, weaponIndex);
 
@@ -67,6 +75,15 @@ namespace Unity.FPS.UI
         void ChangeWeapon(WeaponController weapon)
         {
             UnityEngine.UI.LayoutRebuilder.ForceRebuildLayoutImmediate(AmmoPanel);
+        }
+
+        public IEnumerator GetLocalPlayer()
+        {
+            yield return new WaitUntil(() => _localClient.PlayerObject != null);
+            _localPlayer = _localClient.PlayerObject;
+            m_PlayerWeaponsManager = _localPlayer.GetComponent<PlayerWeaponsManager>();
+            localPlayerCoroutine = null;
+            SetupWeapon();
         }
     }
 }
