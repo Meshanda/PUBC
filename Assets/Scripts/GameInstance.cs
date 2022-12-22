@@ -42,6 +42,12 @@ public class GameInstance : NetworkBehaviour
         playerKills.killsAmount += killAmountToAdd;
         ReplacePlayerKillAmount(clientID, playerKills);
     }
+    public void RemoveKill(ulong clientID, int killAmountToRemove = 1)
+    {
+        PlayerKillAmount playerKills = GetPlayerKillAmount(clientID);
+        playerKills.killsAmount -= killAmountToRemove;
+        ReplacePlayerKillAmount(clientID, playerKills);
+    }
     public void AddKill(NetworkClient client, int killAmountToAdd = 1)
     {
         AddKill(client.ClientId, killAmountToAdd);
@@ -86,7 +92,10 @@ public class GameInstance : NetworkBehaviour
     }
     public void OnPlayerKill(ulong killerClientId, ulong deadClientId)
     {
-        AddKill(killerClientId);
+        if(killerClientId != deadClientId)
+            AddKill(killerClientId);
+        else
+            RemoveKill(killerClientId);
     }
     public void OnGameRestart()
     {
