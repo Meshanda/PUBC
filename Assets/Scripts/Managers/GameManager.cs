@@ -8,17 +8,19 @@ using System;
 
 public class GameManager : NetworkBehaviour
 {
-    public static GameManager instance;
-    public Action OnGameEnd;
+    public static GameManager Instance;
     public Action OnGameRestart;
     [SerializeField]private IntVariable _maxWinKill;
+    private bool _hasGameEnded;
+
+    public bool GameEnded => _hasGameEnded; 
 
     private void Awake()
     {
-        if (instance == null)
+        if (Instance == null)
         {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
+            Instance = this;
+            //DontDestroyOnLoad(gameObject);
         }
         else
             Destroy(this);
@@ -39,7 +41,9 @@ public class GameManager : NetworkBehaviour
 
     public IEnumerator GameFinished(bool byTime = false)
     {
-        OnGameEnd?.Invoke();
+        _hasGameEnded = true;
+        EndManager.GameEnd?.Invoke();
+        
         if (byTime)
             Debug.Log("Game finished by time");
         else

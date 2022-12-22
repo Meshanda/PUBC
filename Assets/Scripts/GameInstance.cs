@@ -52,7 +52,7 @@ public class GameInstance : NetworkBehaviour
             NetworkManager.OnServerStarted += OnServerStarted;
             NetworkManager.OnClientConnectedCallback += AddPlayer;
 
-            GameManager.instance.OnGameRestart += OnGameRestart;
+            GameManager.Instance.OnGameRestart += OnGameRestart;
         }
     }
     public void AddKill(ulong clientID, int killAmountToAdd = 1)
@@ -125,7 +125,7 @@ public class GameInstance : NetworkBehaviour
         int n = playersKills.Count;
         for (int i = 0; i < n - 1; i++)
             for (int j = 0; j < n - i - 1; j++)
-                if (playersKills[j].killsAmount > playersKills[j + 1].killsAmount)
+                if (playersKills[j].killsAmount <= playersKills[j + 1].killsAmount)
                 {
                     // swap temp and arr[i]
                     PlayerKillAmount temp = playersKills[j];

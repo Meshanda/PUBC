@@ -11,6 +11,8 @@ public class ScoreboardScript : MonoBehaviour
 
     private void Update()
     {
+        if (GameManager.Instance.GameEnded) return;
+        
         if (!Input.GetKey(KeyCode.Tab))
         {
             _panelParent.gameObject.SetActive(false);

@@ -52,7 +52,7 @@ namespace Unity.FPS.Game
         }
         
         
-        [ServerRpc]
+        [ServerRpc (RequireOwnership = false)]
         public void DestroyObjectServerRpc()
         {
             GetComponent<NetworkObject>().Despawn();
