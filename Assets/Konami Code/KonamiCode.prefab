@@ -248,8 +248,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 483f42dfb361c0d4cbc290200e0fb3a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyStrokeText: {fileID: 1862771966465601915}
-  cheatCodeText: {fileID: 1862771966313003670}
+  _buttonTexts: []
+  _font: {fileID: 11400000, guid: 25603afac49b38642ab285d85c17dc87, type: 2}
 --- !u!1 &1862771966313003664
 GameObject:
   m_ObjectHideFlags: 0

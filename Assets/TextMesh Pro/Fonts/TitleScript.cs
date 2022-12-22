@@ -10,6 +10,23 @@ public class TitleScript : MonoBehaviour
     [SerializeField] private float _textSizeMax;
     [SerializeField] private float _speed;
 
+    public float Speed
+    {
+        get => _speed;
+        set => _speed = value;
+    }
+
+    public float TextMinSize
+    {
+        get => _textSizeMin;
+        set => _textSizeMin = value;
+    }
+    public float TextMaxSize
+    {
+        get => _textSizeMax;
+        set => _textSizeMax = value;
+    }
+
     void Start()
     {
         StartCoroutine(Routine());

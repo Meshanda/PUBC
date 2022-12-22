@@ -6,7 +6,6 @@ using UnityEngine;
 public class UIManager : GenericSingleton<UIManager>
 {
     [SerializeField] private Texture2D _menuCursor;
-    [SerializeField] private Texture2D _crosshairCursor;
 
     private string _name;
 
@@ -29,13 +28,6 @@ public class UIManager : GenericSingleton<UIManager>
     public void SetMenuCursor()
     {
         Cursor.SetCursor(_menuCursor, Vector2.zero, CursorMode.ForceSoftware);
-    }
-    
-    public void SetCrosshairCursor()
-    {
-        Vector2 test = Vector2.zero;
-        test.y = 80f;
-        Cursor.SetCursor(_crosshairCursor, test, CursorMode.ForceSoftware);
     }
 
     public void SetCursorVisibility(bool visible)
