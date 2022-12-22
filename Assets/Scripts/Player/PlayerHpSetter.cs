@@ -33,6 +33,7 @@ public class PlayerHpSetter : NetworkBehaviour
             return;
         if (_hp.Value <= 0) 
         {
+            //HERE
             if(_death != null)
                 _death.Raise();
             gameObject.SetActive(false);

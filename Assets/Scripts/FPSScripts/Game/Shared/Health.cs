@@ -13,6 +13,9 @@ namespace Unity.FPS.Game
         [Tooltip("Health ratio at which the critical health vignette starts appearing")]
         public float CriticalHealthRatio = 0.3f;
 
+        [SerializeField] AudioClip[] sounds;
+        AudioSource myAudioSource;
+
         public UnityAction<float, GameObject> OnDamaged;
         public UnityAction<float> OnHealed;
         public UnityAction<ulong,ulong> OnDie;
@@ -25,6 +28,8 @@ namespace Unity.FPS.Game
         public bool IsCritical() => GetRatio() <= CriticalHealthRatio;
 
         bool m_IsDead;
+
+        
 
         void Start()
         {
