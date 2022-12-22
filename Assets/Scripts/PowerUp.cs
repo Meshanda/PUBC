@@ -33,7 +33,7 @@ public class PowerUp : NetworkBehaviour
                 //other.gameObject.GetComponent<Health>().Heal(-50);
 
                 //marche pas ca
-                other.gameObject.GetComponent<PlayerWeaponsManager>().GetActiveWeapon().BulletsPerShot.Value = 3;
+                other.gameObject.GetComponent<PlayerWeaponsManager>().Weapon.BulletsPerShot.Value = 3;
 
             }
 
