@@ -22,12 +22,12 @@ public class SpawnerManager : NetworkBehaviour
     {
         if(!IsServer && !IsHost) enabled = false;
         //Get terrain size
-        terrainWidth = terrain.terrainData.size.x;
-        terrainLength = terrain.terrainData.size.z;
+        terrainWidth = terrain.terrainData.size.x / 2;
+        terrainLength = terrain.terrainData.size.z / 2;
 
         //Get terrain position
-        xTerrainPos = terrain.transform.position.x;
-        zTerrainPos = terrain.transform.position.z;
+        xTerrainPos = terrain.transform.position.x + terrain.terrainData.size.x / 4;
+        zTerrainPos = terrain.transform.position.z+ terrain.terrainData.size.z / 4;
 
         foreach (var client in NetworkManager.ConnectedClients)
         {
