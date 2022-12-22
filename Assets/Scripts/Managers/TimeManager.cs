@@ -22,12 +22,15 @@ public class TimeManager : NetworkBehaviour
     }
     private void Update()
     {
-        if (!IsServer) return;
-        _roundTimeLeft.Value -= Time.deltaTime;
-        _timeLeftGeneric.value = _roundTimeLeft.Value;
-        if(_roundTimeLeft.Value <= 0)
+        if (IsServer)
         {
-            StartCoroutine(GameManager.instance.GameFinished(true));
+            _roundTimeLeft.Value -= Time.deltaTime;
+            if (_roundTimeLeft.Value <= 0)
+            {
+                StartCoroutine(GameManager.instance.GameFinished(true));
+            }
         }
+        _timeLeftGeneric.value = _roundTimeLeft.Value;
+
     }
 }
