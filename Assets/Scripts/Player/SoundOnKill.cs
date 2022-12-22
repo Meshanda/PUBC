@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class SoundOnKill : MonoBehaviour
@@ -25,10 +26,9 @@ public class SoundOnKill : MonoBehaviour
         OnKill -= OnKillSound;
     }
 
+    [ClientRpc]
     private void OnKillSound(ulong killerId, ulong deadId)
     {
-        throw new NotImplementedException();
-
         AudioClip clip = sounds[UnityEngine.Random.Range(0, sounds.Length)];
         myAudioSource.PlayOneShot(clip);
     }
