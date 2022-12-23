@@ -4,30 +4,48 @@ using System.Collections.Generic;
 using Unity.Netcode;
 using UnityEngine;
 
-public class SoundOnKill : MonoBehaviour
+public class SoundOnKill : NetworkBehaviour
 {
     public static Action<ulong, ulong> OnKill;
-    [SerializeField] AudioClip[] sounds;
-    AudioSource myAudioSource;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        myAudioSource = GetComponent<AudioSource>();
-    }
+    [SerializeField] private AudioClip[] sounds;
+    [SerializeField] private AudioSource myAudioSource;
 
     private void OnEnable()
     {
-        OnKill += OnKillSound;
+        OnKill += OnKillSoundServerRpc;
     }
 
     private void OnDisable()
     {
-        OnKill -= OnKillSound;
+        OnKill -= OnKillSoundServerRpc;
+    }
+    
+    private void Start()
+    {
+        if (!IsOwner)
+        {
+            enabled = false;
+            
+            // Disabled should unsubscribe the function but it doesn't work, so do it here
+            OnKill -= OnKillSoundServerRpc;
+        }
+
+        myAudioSource.name = $"MyIdIs {OwnerClientId}";
     }
 
-    private void OnKillSound(ulong killerId, ulong deadId)
+    [ServerRpc]
+    private void OnKillSoundServerRpc(ulong killerId, ulong deadId)
     {
+        GameObject PlayerObject = NetworkManager.ConnectedClients[killerId].PlayerObject.gameObject;
+        PlayerObject.GetComponentInChildren<SoundOnKill>().PlaySoundClientRpc();
+    }
+
+    [ClientRpc]
+    public void PlaySoundClientRpc()
+    {
+        if (!IsOwner)
+            return;
+        
         AudioClip clip = sounds[UnityEngine.Random.Range(0, sounds.Length)];
         myAudioSource.PlayOneShot(clip);
     }

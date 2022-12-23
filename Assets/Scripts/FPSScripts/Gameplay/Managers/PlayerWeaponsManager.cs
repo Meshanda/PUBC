@@ -81,12 +81,15 @@ namespace Unity.FPS.Gameplay
         public LayerMask FpsWeaponLayer;
 
         public bool IsAiming { get; private set; }
-        public bool IsPointingAtEnemy { get; private set; }
+        public NetworkVariable<bool> isPointingAtEnemy;
         public int ActiveWeaponIndex { get; private set; }
 
         public UnityAction<WeaponController> OnSwitchedToWeapon;
         public UnityAction<WeaponController, int> OnAddedWeapon;
         public UnityAction<WeaponController, int> OnRemovedWeapon;
+
+
+        [SerializeField] private LayerMask enemiesMask;
 
         WeaponController[] m_WeaponSlots = new WeaponController[9]; // 9 available weapon slots
         PlayerInputHandler m_InputHandler;
@@ -192,20 +195,26 @@ namespace Unity.FPS.Gameplay
             }
 
             // Pointing at enemy handling
-            IsPointingAtEnemy = false;
+            ChangePointtingEnemyServerRpc(false);
             if (activeWeapon)
             {
                 if (Physics.Raycast(WeaponCamera.transform.position, WeaponCamera.transform.forward, out RaycastHit hit,
-                    1000, -1, QueryTriggerInteraction.Ignore))
+                    1000, enemiesMask, QueryTriggerInteraction.UseGlobal))
                 {
                     if (hit.collider.GetComponentInParent<Health>() != null)
                     {
-                        IsPointingAtEnemy = true;
+                        ChangePointtingEnemyServerRpc(true);
                     }
                 }
             }
         }
 
+        [ServerRpc]
+        public void ChangePointtingEnemyServerRpc(bool value)
+        {
+            isPointingAtEnemy.Value = value;
+        }
+        
 
         public void OnShoot(InputValue value)
         {

@@ -1,11 +1,12 @@
 ﻿using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
+using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Unity.FPS.UI
 {
-    public class CrosshairManager : MonoBehaviour
+    public class CrosshairManager : NetworkBehaviour
     {
         public Image CrosshairImage;
         public Sprite NullCrosshairSprite;
@@ -20,7 +21,7 @@ namespace Unity.FPS.UI
 
         void Start()
         {
-            m_WeaponsManager = GameObject.FindObjectOfType<PlayerWeaponsManager>();
+            m_WeaponsManager = NetworkManager.LocalClient.PlayerObject.GetComponent<PlayerWeaponsManager>();
             DebugUtility.HandleErrorIfNullFindObject<PlayerWeaponsManager, CrosshairManager>(m_WeaponsManager, this);
 
             OnWeaponChanged(m_WeaponsManager.GetActiveWeapon());
@@ -31,7 +32,7 @@ namespace Unity.FPS.UI
         void Update()
         {
             UpdateCrosshairPointingAtEnemy(false);
-            m_WasPointingAtEnemy = m_WeaponsManager.IsPointingAtEnemy;
+            m_WasPointingAtEnemy = m_WeaponsManager.isPointingAtEnemy.Value;
         }
 
         void UpdateCrosshairPointingAtEnemy(bool force)
@@ -39,13 +40,13 @@ namespace Unity.FPS.UI
             if (m_CrosshairDataDefault.CrosshairSprite == null)
                 return;
 
-            if ((force || !m_WasPointingAtEnemy) && m_WeaponsManager.IsPointingAtEnemy)
+            if ((force || !m_WasPointingAtEnemy) && m_WeaponsManager.isPointingAtEnemy.Value)
             {
                 m_CurrentCrosshair = m_CrosshairDataTarget;
                 CrosshairImage.sprite = m_CurrentCrosshair.CrosshairSprite;
                 m_CrosshairRectTransform.sizeDelta = m_CurrentCrosshair.CrosshairSize * Vector2.one;
             }
-            else if ((force || m_WasPointingAtEnemy) && !m_WeaponsManager.IsPointingAtEnemy)
+            else if ((force || m_WasPointingAtEnemy) && !m_WeaponsManager.isPointingAtEnemy.Value)
             {
                 m_CurrentCrosshair = m_CrosshairDataDefault;
                 CrosshairImage.sprite = m_CurrentCrosshair.CrosshairSprite;

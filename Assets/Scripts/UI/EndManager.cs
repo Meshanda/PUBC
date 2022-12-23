@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.FPS.UI;
 using Unity.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,6 +31,9 @@ public class EndManager : NetworkBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+        
+        // haha yes, no time to make it beautiful
+        NetworkManager.LocalClient.PlayerObject.GetComponentInChildren<WeaponHUDManager>().gameObject.SetActive(false);
         
         elementsToHide.ForEach(e => e.gameObject.SetActive(false));
         elementsToShow.ForEach(e => e.gameObject.SetActive(true));

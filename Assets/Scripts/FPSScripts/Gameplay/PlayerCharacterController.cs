@@ -164,6 +164,7 @@ namespace Unity.FPS.Gameplay
 
 
         public GameObject PlayerMesh;
+        public GameObject WeaponMesh;
 
         void Awake()
         {
@@ -179,6 +180,8 @@ namespace Unity.FPS.Gameplay
             if (!IsOwner)
             {
                 ProjectUtils.SetLayerRecursively(PlayerMesh ,LayerMask.NameToLayer("OtherPlayer"));
+                ProjectUtils.SetLayerRecursively(WeaponMesh ,LayerMask.NameToLayer("OtherWeapon"));
+                
                 gameObject.layer = LayerMask.NameToLayer("OtherPlayer");
 
                 foreach (Behaviour componentToDisable in _disabledOnOtherClient)

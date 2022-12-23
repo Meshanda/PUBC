@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Unity.FPS.Game;
 using Unity.FPS.Gameplay;
 using UnityEngine;
@@ -24,8 +25,14 @@ namespace Unity.FPS.UI
         
         public Coroutine localPlayerCoroutine;
 
-        public override void OnNetworkSpawn()
+        private void Start()
         {
+            if (!IsOwner)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+            
             _localClient = NetworkManager.LocalClient;
             StartCoroutine(GetLocalPlayer());
             _ammoCounterInstance = Instantiate(AmmoCounterPrefab, AmmoPanel);
