@@ -171,10 +171,6 @@ namespace Unity.FPS.Gameplay
 
         void Awake()
         {
-            usernameSO.UpdateNameViaId(NetworkManager.LocalClientId, GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag);
-            Debug.Log(NetworkManager.LocalClientId);
-            Debug.Log(GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag);
-            
             ActorsManager actorsManager = FindObjectOfType<ActorsManager>();
             if (actorsManager != null)
                 actorsManager.SetPlayer(gameObject);
