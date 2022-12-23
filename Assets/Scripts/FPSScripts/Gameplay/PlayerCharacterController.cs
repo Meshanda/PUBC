@@ -303,12 +303,13 @@ namespace Unity.FPS.Gameplay
             // character movement handling
             if (_horizontalAxis != Vector3.zero)
             {
-                _playerAnimator.SetBool("Run", true);
+                PlayMoveAnimationServerRpc(true);
             }
             else
             {
-                _playerAnimator.SetBool("Run", false);
+                PlayMoveAnimationServerRpc(false);
             }
+            
             {
                 if (_bIsSprinting)
                 {
@@ -455,12 +456,12 @@ namespace Unity.FPS.Gameplay
                     IsGrounded = false;
                     m_GroundNormal = Vector3.up;
                     
-                    _playerAnimator.SetBool("Jump", true);
+                    PlayJumpAnimationServerRpc(true);
                 }
             }
             else if (IsGrounded)
             {
-                _playerAnimator.SetBool("Jump", false);
+                PlayJumpAnimationServerRpc(false);
             }
         }
 
@@ -566,6 +567,19 @@ namespace Unity.FPS.Gameplay
                 return;
 
             SetCrouchingState(value.isPressed, false);
+        }
+
+
+        [ServerRpc]
+        public void PlayJumpAnimationServerRpc(bool bValue)
+        {
+            _playerAnimator.SetBool("Jump", bValue);
+        }
+
+        [ServerRpc]
+        public void PlayMoveAnimationServerRpc(bool bValue)
+        {
+            _playerAnimator.SetBool("Run", bValue);
         }
     }
 }
