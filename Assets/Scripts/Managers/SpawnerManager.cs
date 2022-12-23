@@ -18,12 +18,11 @@ public class SpawnerManager : NetworkBehaviour
     private float xTerrainPos;
     private float zTerrainPos;
 
-    private void Start()
+    private void Awake()
     {
         if(!IsServer && !IsHost)
         {
             enabled = false;
-            return;
         }
         //Get terrain size
         terrainWidth = terrain.terrainData.size.x / 2;
