@@ -150,47 +150,14 @@ namespace Unity.FPS.Gameplay
 
             if (activeWeapon != null && m_WeaponSwitchState == WeaponSwitchState.Up)
             {
-                if (!activeWeapon.AutomaticReload && m_InputHandler.GetReloadButtonDown() && activeWeapon.CurrentAmmoRatio < 1.0f)
-                {
-                    IsAiming = false;
-                    activeWeapon.StartReloadAnimation();
-                    return;
-                }
-                // handle aiming down sights
-                IsAiming = m_InputHandler.GetAimInputHeld();
-
                 // handle shooting
-                bool hasFired = activeWeapon.HandleShootInputs(
-                    _bShoot,
-                    _bShootHold, !_bShootHold);
+                bool hasFired = activeWeapon.HandleShootInputs(_bShoot);
 
                 // Handle accumulating recoil
                 if (hasFired)
                 {
                     m_AccumulatedRecoil += Vector3.back * activeWeapon.RecoilForce;
                     m_AccumulatedRecoil = Vector3.ClampMagnitude(m_AccumulatedRecoil, MaxRecoilDistance);
-                }
-            }
-
-            // weapon switch handling
-            if (!IsAiming &&
-                (activeWeapon == null || !activeWeapon.IsCharging) &&
-                (m_WeaponSwitchState == WeaponSwitchState.Up || m_WeaponSwitchState == WeaponSwitchState.Down))
-            {
-                int switchWeaponInput = m_InputHandler.GetSwitchWeaponInput();
-                if (switchWeaponInput != 0)
-                {
-                    bool switchUp = switchWeaponInput > 0;
-                    SwitchWeapon(switchUp);
-                }
-                else
-                {
-                    switchWeaponInput = m_InputHandler.GetSelectWeaponInput();
-                    if (switchWeaponInput != 0)
-                    {
-                        if (GetWeaponAtSlotIndex(switchWeaponInput - 1) != null)
-                            SwitchToWeaponIndex(switchWeaponInput - 1);
-                    }
                 }
             }
 
@@ -222,6 +189,12 @@ namespace Unity.FPS.Gameplay
                 return;
             
             _bShoot = value.isPressed;
+        }
+
+        
+        public void OnAim(InputValue value)
+        {
+            IsAiming = value.isPressed;
         }
 
         public void OnShootHold(InputValue value)

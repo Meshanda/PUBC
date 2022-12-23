@@ -210,10 +210,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LookSensitivity: 1
-  WebglLookSensitivityMultiplier: 0.25
-  TriggerAxisThreshold: 0.4
-  InvertYAxis: 0
-  InvertXAxis: 0
 --- !u!114 &6577353643092500152
 MonoBehaviour:
   m_ObjectHideFlags: 0

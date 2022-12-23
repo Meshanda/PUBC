@@ -24,15 +24,6 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ShootHold",
-                    "type": "Button",
-                    "id": "db72f9a2-390c-4e0a-bceb-49963c0fe5a9",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=2)",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Shoot",
                     "type": "Button",
                     "id": "91a9bf45-f5e9-4026-aabf-8bd09ea82328",
@@ -60,31 +51,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Reload",
-                    "type": "Button",
-                    "id": "c4030092-ed87-4505-9721-5af59a17df99",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
                     "name": "Aim",
                     "type": "Button",
                     "id": "797750af-d790-48ce-bc17-86968601e401",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": "",
+                    "interactions": "Press(behavior=2)",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "SwitchButton",
-                    "type": "Value",
-                    "id": "a318ca3e-6598-49b4-b5e3-9120f65536e5",
-                    "expectedControlType": "Axis",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 },
                 {
                     "name": "Crouch",
@@ -220,17 +193,6 @@
                 },
                 {
                     "name": "",
-                    "id": "82c2e7d3-ace3-4aef-a1ba-edb384c11590",
-                    "path": "<Keyboard>/r",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Reload",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "97dd34e8-164a-4000-ba5b-268b487dea56",
                     "path": "<Mouse>/rightButton",
                     "interactions": "",
@@ -242,45 +204,12 @@
                 },
                 {
                     "name": "",
-                    "id": "558ee4a0-05d4-4e9a-b272-a0aa3814576a",
-                    "path": "<Mouse>/scroll/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwitchButton",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f2695f65-208b-4a0c-addc-32a5fc79bde4",
-                    "path": "<Mouse>/scroll/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "SwitchButton",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "921d7c80-ac40-4f68-91dc-72ee7b745ac3",
                     "path": "<Keyboard>/c",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Crouch",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "14138113-3875-4aab-87c2-ba8cf4bf0ba4",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ShootHold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

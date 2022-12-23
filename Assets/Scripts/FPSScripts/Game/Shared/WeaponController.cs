@@ -351,44 +351,16 @@ namespace Unity.FPS.Game
             m_LastTimeShot = Time.time;
         }
 
-        public bool HandleShootInputs(bool inputDown, bool inputHeld, bool inputUp)
+        public bool HandleShootInputs(bool inputDown)
         {
-            m_WantsToShoot = inputDown || inputHeld;
-            switch (ShootType)
+            m_WantsToShoot = inputDown;
+            
+            if (inputDown)
             {
-                case WeaponShootType.Manual:
-                    if (inputDown)
-                    {
-                        return TryShoot();
-                    }
-
-                    return false;
-
-                case WeaponShootType.Automatic:
-                    if (inputHeld)
-                    {
-                        return TryShoot();
-                    }
-
-                    return false;
-
-                case WeaponShootType.Charge:
-                    if (inputHeld)
-                    {
-                        TryBeginCharge();
-                    }
-
-                    // Check if we released charge or if the weapon shoot autmatically when it's fully charged
-                    if (inputUp || (AutomaticReleaseOnCharged && CurrentCharge >= 1f))
-                    {
-                        return TryReleaseCharge();
-                    }
-
-                    return false;
-
-                default:
-                    return false;
+                return TryShoot();
             }
+
+            return false;
         }
 
         bool TryShoot()

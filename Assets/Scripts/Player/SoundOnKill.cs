@@ -33,7 +33,7 @@ public class SoundOnKill : NetworkBehaviour
         myAudioSource.name = $"MyIdIs {OwnerClientId}";
     }
 
-    [ServerRpc]
+    [ServerRpc (RequireOwnership = false)]
     private void OnKillSoundServerRpc(ulong killerId, ulong deadId)
     {
         GameObject PlayerObject = NetworkManager.ConnectedClients[killerId].PlayerObject.gameObject;
