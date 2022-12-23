@@ -1,12 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using Network;
 using Unity.FPS.Game;
 using Unity.FPS.UI;
 using Unity.Netcode;
+using Unity.Services.Lobbies.Models;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class SpawnerManager : NetworkBehaviour
 {
+    [SerializeField] private PlayerUsernameList usernameSo;
     public GameObject prefab;
     public Terrain terrain;
     public float yOffset = 1f;
@@ -36,8 +41,84 @@ public class SpawnerManager : NetworkBehaviour
         {
             RespawnPlayer(client.Key);
         }
+
         NetworkManager.OnClientConnectedCallback += RespawnPlayer;
+        NetworkManager.OnClientConnectedCallback += UpdateSoServerRpc;
     }
+    
+    public override void OnNetworkSpawn()
+    {
+        Debug.Log("IsServer:" + IsServer);
+        Debug.Log("IsHost:" + IsHost);
+        Debug.Log("IsClient:" + IsClient);
+
+        if (IsServer) AddHostToSo();
+        if (IsClient && !IsHost) {
+            Debug.Log("SendingToServer");
+            AddClientToServerRpc(NetworkManager.Singleton.LocalClientId,
+            GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag);}
+        
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void AddClientToServerRpc(ulong id, string pseudo)
+    {
+        Debug.Log("AddClientToServer");
+        usernameSo.playersNames.Add(new PlayerName
+        {
+            username = pseudo,
+            clientId = id
+        });
+    }
+
+    private void AddHostToSo()
+    {
+        Debug.Log("AddHost");
+        usernameSo.playersNames.Clear();
+        
+        usernameSo.playersNames.Add(new PlayerName
+        {
+            username = GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag,
+            clientId = NetworkManager.Singleton.LocalClientId
+        });
+    }
+
+    [ServerRpc]
+    private void UpdateSoServerRpc(ulong id)
+    {
+        Debug.Log("SendListToClients");
+
+        ClearSoClientRpc();
+
+        foreach (var player in usernameSo.playersNames)
+        {
+            UpdateSoClientRpc(player.username, player.clientId);
+        }
+    }
+    
+
+    [ClientRpc]
+    private void UpdateSoClientRpc(string pseudo, ulong id)
+    {
+        if (IsHost) return;
+        
+        Debug.Log("AddEachClient");
+        usernameSo.playersNames.Add(new PlayerName
+        {
+            username = pseudo,
+            clientId = id
+        });    
+    }
+    
+    [ClientRpc]
+    private void ClearSoClientRpc()
+    {
+        if (IsHost) return;
+        
+        Debug.Log("ClearClientSo");
+        usernameSo.playersNames.Clear();
+    }
+
 
     public void RespawnPlayer(ulong ownerId)
     {
