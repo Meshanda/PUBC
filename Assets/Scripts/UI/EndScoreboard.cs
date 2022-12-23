@@ -1,7 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class EndScoreboard : MonoBehaviour
@@ -12,6 +9,7 @@ public class EndScoreboard : MonoBehaviour
     [SerializeField] private Transform _parent;
     [SerializeField] private ScoreboardSO _scoreboardData;
 
+    private bool _fill;
     private void OnEnable()
     {
         FillScoreboard += OnFillScoreboard;
@@ -24,6 +22,23 @@ public class EndScoreboard : MonoBehaviour
 
     private void OnFillScoreboard()
     {
+        _fill = true;
+        
+    }
+
+    private void Update()
+    {
+        if (!_fill) return;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        ClearScoreboard();
+        Fill();
+    }
+
+    private void Fill()
+    {
         foreach (var player in _scoreboardData.players)
         {
             var rowScript = Instantiate(_rowPfb, _parent).GetComponent<RowScript>();
@@ -34,4 +49,11 @@ public class EndScoreboard : MonoBehaviour
         }
     }
 
+    private void ClearScoreboard()
+    {
+        foreach (var child in _parent.GetComponentsInChildren<RowScript>())
+        {
+            Destroy(child.gameObject);
+        }
+    }
 }
