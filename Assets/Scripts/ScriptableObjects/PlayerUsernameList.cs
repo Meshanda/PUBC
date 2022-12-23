@@ -9,7 +9,9 @@ public class PlayerUsernameList : ScriptableObject
 
     public string GetNameViaId(ulong id)
     {
-        return playersNames.Find((pn) => pn.clientId == id).username;
+        var pseudo = playersNames.Find((pn) => pn.clientId == id).username;
+
+        return pseudo ?? "RandomPlayer";
     }
 
     public void UpdateNameViaId(ulong id, string pseudo)

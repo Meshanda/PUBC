@@ -214,6 +214,8 @@ public class LobbyUI : MonoBehaviour
 
     private async void OnStartButtonClicked()
     {
+        _startButton.interactable = false;
+        
         await GameLobbyManager.Instance.SetSelectedMap(_currentMapIndex, _mapSelectionData.Maps[_currentMapIndex].SceneName);
         await GameLobbyManager.Instance.StartGame();
     }
