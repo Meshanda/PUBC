@@ -180,7 +180,6 @@ GameObject:
   - component: {fileID: 3464315327790461765}
   - component: {fileID: 4234830436940505133}
   - component: {fileID: 8502097699347725703}
-  - component: {fileID: 1345943282138014167}
   - component: {fileID: 3444686158330356048}
   m_Layer: 0
   m_Name: Enemy_Turret
@@ -282,6 +281,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 400
   CriticalHealthRatio: 0.3
+  sounds: []
+  CurrentHealth:
+    m_InternalValue: 0
+  Invincible:
+    m_InternalValue: 0
 --- !u!114 &3464315327790461765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -339,21 +343,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Affiliation: 0
   AimPoint: {fileID: 7886326314632062843}
---- !u!114 &1345943282138014167
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2015434656898269652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14b7698ec50c85c44a849a968dc1d57d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CompassMarkerPrefab: {fileID: 4125838790012652590, guid: 513785daf84f2a243b0cda079e6835cd,
-    type: 3}
-  TextDirection: 
 --- !u!195 &3444686158330356048
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -699,7 +688,8 @@ MonoBehaviour:
     type: 3}
   DelayBetweenShots: 0.06
   BulletSpreadAngle: 0
-  BulletsPerShot: 1
+  BulletsPerShot:
+    m_InternalValue: 1
   RecoilForce: 1
   AimZoomRatio: 1
   AimOffset: {x: 0, y: 0, z: 0}

@@ -81,12 +81,15 @@ namespace Unity.FPS.Gameplay
         public LayerMask FpsWeaponLayer;
 
         public bool IsAiming { get; private set; }
-        public bool IsPointingAtEnemy { get; private set; }
+        public NetworkVariable<bool> isPointingAtEnemy;
         public int ActiveWeaponIndex { get; private set; }
 
         public UnityAction<WeaponController> OnSwitchedToWeapon;
         public UnityAction<WeaponController, int> OnAddedWeapon;
         public UnityAction<WeaponController, int> OnRemovedWeapon;
+
+
+        [SerializeField] private LayerMask enemiesMask;
 
         WeaponController[] m_WeaponSlots = new WeaponController[9]; // 9 available weapon slots
         PlayerInputHandler m_InputHandler;
@@ -147,19 +150,8 @@ namespace Unity.FPS.Gameplay
 
             if (activeWeapon != null && m_WeaponSwitchState == WeaponSwitchState.Up)
             {
-                if (!activeWeapon.AutomaticReload && m_InputHandler.GetReloadButtonDown() && activeWeapon.CurrentAmmoRatio < 1.0f)
-                {
-                    IsAiming = false;
-                    activeWeapon.StartReloadAnimation();
-                    return;
-                }
-                // handle aiming down sights
-                IsAiming = m_InputHandler.GetAimInputHeld();
-
                 // handle shooting
-                bool hasFired = activeWeapon.HandleShootInputs(
-                    _bShoot,
-                    _bShootHold, !_bShootHold);
+                bool hasFired = activeWeapon.HandleShootInputs(_bShoot);
 
                 // Handle accumulating recoil
                 if (hasFired)
@@ -169,43 +161,27 @@ namespace Unity.FPS.Gameplay
                 }
             }
 
-            // weapon switch handling
-            if (!IsAiming &&
-                (activeWeapon == null || !activeWeapon.IsCharging) &&
-                (m_WeaponSwitchState == WeaponSwitchState.Up || m_WeaponSwitchState == WeaponSwitchState.Down))
-            {
-                int switchWeaponInput = m_InputHandler.GetSwitchWeaponInput();
-                if (switchWeaponInput != 0)
-                {
-                    bool switchUp = switchWeaponInput > 0;
-                    SwitchWeapon(switchUp);
-                }
-                else
-                {
-                    switchWeaponInput = m_InputHandler.GetSelectWeaponInput();
-                    if (switchWeaponInput != 0)
-                    {
-                        if (GetWeaponAtSlotIndex(switchWeaponInput - 1) != null)
-                            SwitchToWeaponIndex(switchWeaponInput - 1);
-                    }
-                }
-            }
-
             // Pointing at enemy handling
-            IsPointingAtEnemy = false;
+            ChangePointtingEnemyServerRpc(false);
             if (activeWeapon)
             {
                 if (Physics.Raycast(WeaponCamera.transform.position, WeaponCamera.transform.forward, out RaycastHit hit,
-                    1000, -1, QueryTriggerInteraction.Ignore))
+                    1000, enemiesMask, QueryTriggerInteraction.UseGlobal))
                 {
                     if (hit.collider.GetComponentInParent<Health>() != null)
                     {
-                        IsPointingAtEnemy = true;
+                        ChangePointtingEnemyServerRpc(true);
                     }
                 }
             }
         }
 
+        [ServerRpc]
+        public void ChangePointtingEnemyServerRpc(bool value)
+        {
+            isPointingAtEnemy.Value = value;
+        }
+        
 
         public void OnShoot(InputValue value)
         {
@@ -213,6 +189,12 @@ namespace Unity.FPS.Gameplay
                 return;
             
             _bShoot = value.isPressed;
+        }
+
+        
+        public void OnAim(InputValue value)
+        {
+            IsAiming = value.isPressed;
         }
 
         public void OnShootHold(InputValue value)

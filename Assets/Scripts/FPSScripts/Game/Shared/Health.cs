@@ -104,9 +104,16 @@ namespace Unity.FPS.Game
             if (CurrentHealth.Value <= 0f)
             {
                 m_IsDead = true;
+                DespawnOnKillServerRpc();
                 OnDie?.Invoke(killer.GetComponent<NetworkObject>().OwnerClientId,OwnerClientId);
-                Destroy(gameObject);
             }
         }
+
+        [ServerRpc]
+        void DespawnOnKillServerRpc()
+        {
+            GetComponent<NetworkObject>().Despawn();
+        }
+        
     }
 }
