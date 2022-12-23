@@ -66,7 +66,6 @@ GameObject:
   - component: {fileID: 3464315327790461765}
   - component: {fileID: 7406548990343174644}
   - component: {fileID: 6449686686394465367}
-  - component: {fileID: 797398738606809810}
   - component: {fileID: 1614318205656627459}
   m_Layer: 0
   m_Name: Enemy_HoverBot
@@ -200,6 +199,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHealth: 100
   CriticalHealthRatio: 0.3
+  sounds: []
+  CurrentHealth:
+    m_InternalValue: 0
+  Invincible:
+    m_InternalValue: 0
 --- !u!114 &3464315327790461765
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -252,21 +256,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Affiliation: 0
   AimPoint: {fileID: 381893446485871685}
---- !u!114 &797398738606809810
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2015434656898269652}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14b7698ec50c85c44a849a968dc1d57d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CompassMarkerPrefab: {fileID: 4125838790012652590, guid: 513785daf84f2a243b0cda079e6835cd,
-    type: 3}
-  TextDirection: 
 --- !u!82 &1614318205656627459
 AudioSource:
   m_ObjectHideFlags: 0
@@ -787,7 +776,8 @@ MonoBehaviour:
     type: 3}
   DelayBetweenShots: 0.8
   BulletSpreadAngle: 0
-  BulletsPerShot: 1
+  BulletsPerShot:
+    m_InternalValue: 1
   RecoilForce: 1
   AimZoomRatio: 1
   AimOffset: {x: 0, y: 0, z: 0}

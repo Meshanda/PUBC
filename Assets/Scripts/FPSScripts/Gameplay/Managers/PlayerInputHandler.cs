@@ -6,10 +6,6 @@ namespace Unity.FPS.Gameplay
 {
     public class PlayerInputHandler : NetworkBehaviour
     {
-        [Tooltip("Sensitivity multiplier for moving the camera around")]
-        public float LookSensitivity = 1f;
-
-        
         void Start()
         {
             Cursor.lockState = CursorLockMode.Locked;
