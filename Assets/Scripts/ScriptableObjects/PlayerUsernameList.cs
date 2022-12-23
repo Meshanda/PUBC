@@ -11,6 +11,11 @@ public class PlayerUsernameList : ScriptableObject
     {
         return playersNames.Find((pn) => pn.clientId == id).username;
     }
+
+    public void UpdateNameViaId(ulong id, string pseudo)
+    {
+        playersNames.Find(pn => pn.clientId == id).username = pseudo;
+    }
 }
 
 [System.Serializable]

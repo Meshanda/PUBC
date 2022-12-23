@@ -453,6 +453,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8e9b849ae2755b428b23edfa9686c79, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usernameSO: {fileID: 11400000, guid: 933bd6f4d40e84e4f82b91e4f2995035, type: 2}
   PlayerCamera: {fileID: 2535689118277694651}
   AudioSource: {fileID: 4729456779546838323}
   GravityDownForce: 20

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Network;
 using Unity.FPS.Game;
 using Unity.Netcode;
 using UnityEngine;
@@ -10,6 +11,8 @@ namespace Unity.FPS.Gameplay
     [RequireComponent(typeof(CharacterController), typeof(PlayerInputHandler), typeof(AudioSource))]
     public class PlayerCharacterController : NetworkBehaviour
     {
+        [SerializeField] private PlayerUsernameList usernameSO;
+        
         [Header("References")] [Tooltip("Reference to the main camera used for the player")]
         public Camera PlayerCamera;
 
@@ -168,7 +171,9 @@ namespace Unity.FPS.Gameplay
 
         void Awake()
         {
+            usernameSO.UpdateNameViaId(NetworkManager.LocalClientId, GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag);
             Debug.Log(NetworkManager.LocalClientId);
+            Debug.Log(GameLobbyManager.Instance.GetLocalLobbyPlayerData.Gamertag);
             
             ActorsManager actorsManager = FindObjectOfType<ActorsManager>();
             if (actorsManager != null)
