@@ -42,20 +42,7 @@ public class EndManager : NetworkBehaviour
     
     public void ClickMenu()
     {
-        if (IsServer)
-        { 
-            ClientHandlerClientRPC();
-        }
         
-#if UNITY_EDITOR
-        EditorApplication.ExitPlaymode();
-#endif
-        Application.Quit();
-    }
-
-    [ClientRpc]
-    private void ClientHandlerClientRPC()
-    {
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
 #endif
