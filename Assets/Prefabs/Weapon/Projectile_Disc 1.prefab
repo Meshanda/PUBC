@@ -111,12 +111,11 @@ MonoBehaviour:
   HittableLayers:
     serializedVersion: 2
     m_Bits: 19767
-  Speed: 50
+  Speed: 150
   GravityDownAcceleration: 10
   TrajectoryCorrectionDistance: -1
   InheritWeaponVelocity: 0
   Damage: 40
-  AreaOfDamage: {fileID: 0}
   RadiusColor: {r: 0, g: 1, b: 1, a: 0.49803922}
 --- !u!114 &6062300543061693974
 MonoBehaviour:
