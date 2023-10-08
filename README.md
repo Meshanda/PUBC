@@ -1,5 +1,8 @@
 # Player Unknow’s Battle for Christmas (PUBC)
 first person shooter, deathmatch(FFA), action
+
+## Itch.io 
+https://meshanda.itch.io/pubc
  
 ## Context
 This game has been made for educational purpose during the second year of the Msc Video Game programming in Gaming Campus with the supervision of Kevin Roussel.  
